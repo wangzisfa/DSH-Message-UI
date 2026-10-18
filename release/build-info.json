@@ -1,12 +1,13 @@
 {
   "name": "dsh-agentarium",
   "version": "0.2.0",
-  "builtAt": "2026-10-18T15:47:41+08:00",
+  "builtAt": "2026-10-18T15:51:40+08:00",
   "source": {
     "repository": "https://github.com/wangzisfa/DSH-Message-UI",
-    "commit": "c8557194ca33c95c278bf9fd9943c01621bb4af3",
+    "commit": "cb2c16f8886079785322a8474aad5d8485a1c65d",
     "uncommittedChangesIncluded": false,
-    "snapshotMethod": "git archive"
+    "snapshotMethod": "git archive",
+    "lastSourceChangeCommit": "c8557194ca33c95c278bf9fd9943c01621bb4af3"
   },
   "toolchain": {
     "node": "v26.6.0",
@@ -15,8 +16,15 @@
   "checks": {
     "frozenLockfileInstall": "passed",
     "typecheckAndBuild": "passed",
-    "verifyPlugin": "passed",
+    "verifyPlugin": "passed (1500 actions: 1.85 ms)",
     "archiveContentMatchesBuild": "passed",
+    "pluginTarballMatchesPreviousRelease": "passed (byte-for-byte)",
+    "demoFilesMatchPreviousRelease": "passed (all files byte-for-byte; existing zip retained)"
+  },
+  "reusedValidation": {
+    "releaseCommit": "cb2c16f8886079785322a8474aad5d8485a1c65d",
+    "builtAt": "2026-10-18T15:47:41+08:00",
+    "reason": "Identical plugin tarball and identical demo payload files; prior installation and browser results apply to the same content.",
     "isolatedDshInstall": "passed (macOS dsh 0.2.1-rc.2)",
     "installedContentMatchesArchive": "passed",
     "productionBrowserSmoke": "passed (load, failure inspector, trace call-003, replay start, return to live)",
