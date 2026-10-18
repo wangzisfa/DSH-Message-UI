@@ -10,11 +10,18 @@
 
 ## 构建与交付
 
-在源码仓库运行 `pnpm install --frozen-lockfile && pnpm build`。插件目录为 `dist/plugin`，可在该目录运行 `npm pack` 生成供宿主导入的 tgz。实际挂载通过目标 dsh 版本的 Profile/Bundles/插件管理完成；使用前需要核对其本地包导入约定。
+在源码仓库运行 `pnpm install --frozen-lockfile && pnpm build:plugin`。插件目录为 `dist/plugin`，包含组合包声明及挂载配置。安装到已有的桌面 Profile：
+
+```sh
+dsh plugin --profile desktop add /Users/leeinn/Documents/personal/DSH-Message-UI/dist/plugin
+```
+
+路径替换为实际产物目录；Profile 名称按实际运行配置选择。重启对应宿主后检查“工作流”页签。也可在 `dist/plugin` 中运行 `npm pack`，通过宿主插件管理重新导入新生成的 tgz。旧 tgz 不会随源码修改自动更新。组合包格式通过验证不代表上述会话接口兼容性已完成验收。
 
 产物包括：
 
-- `package.json`：`dsh.client.platform: web` 与依赖声明。
+- `package.json`：`dsh.bundle.patch`、`dsh.client.platform: web` 与依赖声明。
+- `cordis.patch.yml`：插入 `agentarium` 插件行，按包名加载 `dsh-agentarium`。
 - `lib/index.js`：Host 空入口，不修改 Agent Runtime。
 - `lib/client.js`：dsh 模块加载器 closure factory；复用宿主 React，不创建第二份 React。
 - `THIRD_PARTY_NOTICES.md`：随包许可声明。

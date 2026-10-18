@@ -12,8 +12,11 @@ const manifest = {
   name: 'dsh-agentarium', version: '0.1.0', private: true, type: 'module',
   description: 'Experimental read-only Agentarium conversation view. Verified against dsh 687f282e8625.',
   main: './lib/index.js', exports: { '.': './lib/index.js', './client': './lib/client.js', './package.json': './package.json' },
-  files: ['lib', 'THIRD_PARTY_NOTICES.md', 'README.md'],
-  dsh: { client: { platform: 'web', inject: ['@deepseek-ai/dsh-api-session-controller', '@deepseek-ai/dsh-client-ui-conversation', '@deepseek-ai/dsh-client-ui-renderer', '@deepseek-ai/dsh-client-connection'] } },
+  files: ['lib', 'cordis.patch.yml', 'THIRD_PARTY_NOTICES.md', 'README.md'],
+  dsh: {
+    bundle: { patch: './cordis.patch.yml' },
+    client: { platform: 'web', inject: ['@deepseek-ai/dsh-api-session-controller', '@deepseek-ai/dsh-client-ui-conversation', '@deepseek-ai/dsh-client-ui-renderer', '@deepseek-ai/dsh-client-connection'] },
+  },
 }
 await build({ entryPoints: ['src/dsh/host.ts'], outfile: `${out}/lib/index.js`, bundle: true, format: 'esm', platform: 'node', target: 'es2022' })
 await build({
@@ -27,6 +30,7 @@ await build({
   } }],
 })
 await writeFile(`${out}/package.json`, `${JSON.stringify(manifest, null, 2)}\n`)
+await writeFile(`${out}/cordis.patch.yml`, '- insert:\n    - id: agentarium\n      name: dsh-agentarium\n')
 const packages = ['ascii.rest', 'lucide-react', 'react', 'react-dom', 'scheduler']
 let notices = '# Third-party notices\n\nRuntime dependency license texts. React/ReactDOM are supplied by the dsh host in the plugin bundle.\n'
 for (const name of packages) {
