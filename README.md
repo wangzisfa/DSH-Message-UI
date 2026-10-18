@@ -37,6 +37,7 @@ pnpm preview
 ## 文档
 
 - [产品需求](docs/PRD.md)
+- [按项目定制远征队世界设定](docs/WORLD-SETTING.md)
 - [联网核查与技术方案](docs/TECHNICAL-PLAN.md)
 - [dsh 入口、版本约束与联调步骤](docs/DSH-INTEGRATION.md)
 - [本次验证记录](docs/VERIFICATION.md)
