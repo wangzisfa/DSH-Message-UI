@@ -47,3 +47,42 @@ pnpm preview
 目录：`src/model` 事件模型，`src/demo` 合成记录，`src/components` 共享 UI，`src/dsh` 真实协议适配，`scripts` 插件构建。
 
 按仓库要求未创建单测文件。构建、可重复的 `node scripts/verify-plugin.mjs` 集成检查与浏览器验证记录见 [插件验证](docs/PLUGIN-VERIFICATION.md)；此前 demo 的记录保留在原验证文档中。
+
+## 通过 GitHub 发布与安装
+
+### 发布方式
+
+源码推送到本 GitHub 仓库，构建后的插件安装包放在 [`release/`](release/) 目录。当前发布版本为 **dsh-agentarium 0.2.0**，安装包已包含运行所需的编译产物，用户无需在本地构建，也无需登录 npm。
+
+发布时建议使用语义化 Tag 或锁定 commit，避免分支更新后安装到不同内容。下面的命令固定到已发布的 commit `d4238c261f12d31b71010df3d13f7a1169eba4db`；构建来源与校验值见 [发布说明](release/README.md)。
+
+### 一键安装（推荐）
+
+需要 Node.js ≥ 22.12.0，以及兼容的 dsh `>=0.2.1-rc.2 <0.3.0`（已验证 `0.2.1-rc.2`）。桌面端用户请先启动过 DeepSeek Harness Desktop，让它初始化 `desktop` profile，随后**完全退出客户端**，再在终端执行：
+
+```bash
+dsh plugin --profile desktop add https://raw.githubusercontent.com/wangzisfa/DSH-Message-UI/d4238c261f12d31b71010df3d13f7a1169eba4db/release/dsh-agentarium-0.2.0.tgz
+```
+
+macOS 若提示 `dsh: command not found`，且应用安装在默认位置，可直接使用客户端附带的 CLI：
+
+```bash
+"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add https://raw.githubusercontent.com/wangzisfa/DSH-Message-UI/d4238c261f12d31b71010df3d13f7a1169eba4db/release/dsh-agentarium-0.2.0.tgz
+```
+
+安装后重新打开客户端，进入会话并选择「工作流」标签页。Web 用户将命令中的 `--profile desktop` 改为 `--profile web`，安装后重启对应的 dsh 服务。本安装链接已在隔离的 Web profile 中验证安装成功，并确认插件已加入激活配置。
+
+### Git 源码安装的注意事项
+
+`github:owner/plugin-repo#tag-or-commit` 拉取的是源码。dsh 不会自动替插件执行 `build`；要支持这种安装方式，插件作者需要在包清单中声明正确的插件入口和 `dsh.bundle`，并提供能完成构建的 `prepare` 脚本。
+
+首次安装需要构建的 Git 包时，pnpm 可能因尚未授权构建而中止。应按终端提示，将**提示中给出的准确包名或包标识**加入目标 profile 的 `pnpm-workspace.yaml`，然后重新执行安装。例如，提示要求授权 `dsh-agentarium` 时：
+
+```yaml
+allowBuilds:
+  dsh-agentarium: true
+```
+
+构建授权会执行包提供的脚本，应仅授权可信来源，并固定 Tag 或 commit。具体机制见 [dsh 官方插件发布指南](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)。
+
+**本仓库根目录是开发工程，目前未配置供 Git 源码安装使用的 `prepare` 和插件清单，因此不能直接用 `github:wangzisfa/DSH-Message-UI#…` 安装插件。** 请使用上面的 `.tgz` 一键安装命令；该预构建包不包含安装构建脚本，无需配置 `allowBuilds`。
