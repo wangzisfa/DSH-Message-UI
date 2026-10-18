@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "name": "深海研究所",
+  "squadName": "科考队",
+  "story": "队员在深海观测站协作，收集证据、验证发现，并把结果带回指挥舱。",
+  "leaderTitle": "首席研究员",
+  "specialistTitle": "科考员",
+  "accent": "#a2c6d9",
+  "facilities": {
+    "hq": "指挥舱",
+    "archive": "样本档案室",
+    "workshop": "设备维修间",
+    "terminal": "控制终端",
+    "test": "实验舱",
+    "web": "声呐观测站",
+    "portal": "潜航通道",
+    "utility": "综合工作站"
+  }
+}

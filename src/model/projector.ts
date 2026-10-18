@@ -1,31 +1,32 @@
-import { actionKey, type Actor, type EvidenceEvent, type FacilityId, type World, type Action } from './types'
+import { actionKey, orderEvidence, type Actor, type EvidenceEvent, type FacilityId, type World, type Action } from './types'
 
 export function classifyTool(tool: string): FacilityId {
   if (/^(read_file|read|glob|grep|search|list_directory|ls)$/.test(tool)) return 'archive'
-  if (/^(write_file|edit_file|apply_patch|write|edit)$/.test(tool)) return 'workshop'
+  if (/^(write_file|edit_file|apply_patch|write|edit|str_replace_editor)$/.test(tool)) return 'workshop'
   if (/^(bash|shell|exec_command|terminal|run_code)$/.test(tool)) return 'terminal'
   if (/^(run_tests|test|verify)$/.test(tool)) return 'test'
-  if (/^(web_search|web_fetch|fetch|browser|web)$/.test(tool)) return 'web'
-  if (/^(subagent|spawn_agent|workflow)$/.test(tool)) return 'portal'
+  if (/^(web_search|web_fetch|fetch|browser|web|search_web)$/.test(tool)) return 'web'
+  if (/^(subagent|spawn_agent|workflow|fork|spawn|list_agents|send_message|wait_agents)$/.test(tool)) return 'portal'
   return 'utility'
 }
 
 /** Replay and live views use the same pure fold. A turn boundary never settles a tool. */
-export function projectWorld(sessionId: string, input: readonly EvidenceEvent[]): World {
-  const events = [...new Map(input.filter(e => e.sessionId === sessionId).map(e => [e.id, e])).values()]
-    .sort((a, b) => a.seq - b.seq || a.id.localeCompare(b.id))
+export function projectWorld(sessionId: string, input: readonly EvidenceEvent[], knownActors: readonly Actor[] = []): World {
+  const events = orderEvidence(input.filter(e => (e.worldSessionId ?? e.sessionId) === sessionId))
   const actors = new Map<string, Actor>()
   actors.set('root', { id: 'root', label: 'A0', name: '主控 Agent', role: '协调与交付', visibility: 'root', status: 'idle', facility: 'hq' })
+  for (const actor of knownActors) actors.set(actor.id, { ...actor })
   const actions = new Map<string, Action>()
   const artifacts: EvidenceEvent[] = []
   let status: World['status'] = 'idle'
   for (const event of events) {
     if (event.kind === 'actor.spawn' && event.actor) {
-      actors.set(event.actorId, { id: event.actorId, ...event.actor, status: event.actor.visibility === 'external' ? 'unknown' : 'idle', facility: 'portal', lastEvent: event })
+      const previous = actors.get(event.actorId)
+      actors.set(event.actorId, { id: event.actorId, ...event.actor, label: event.actor.label || previous?.label || `A${actors.size}`, status: previous?.status ?? 'unknown', facility: previous?.facility ?? 'portal', lastEvent: previous?.lastEvent ?? event })
     }
     const actor = actors.get(event.actorId)
-    if (event.kind === 'turn.start') status = 'running'
-    if (event.kind === 'turn.end') status = event.status ?? 'unknown'
+    if (event.actorId === 'root' && event.kind === 'turn.start') status = 'running'
+    if (event.actorId === 'root' && event.kind === 'turn.end') status = event.status ?? 'unknown'
     if (event.kind === 'artifact' && event.artifact) artifacts.push(event)
     if (event.callId && ['action.start', 'action.end', 'action.wait'].includes(event.kind)) {
       const id = actionKey(event.sessionId, event.callId)

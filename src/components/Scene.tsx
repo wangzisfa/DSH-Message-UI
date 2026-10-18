@@ -2,6 +2,7 @@ import { Component, useEffect, useRef, useState, type ReactNode } from 'react'
 import { piece } from 'ascii.rest/kit'
 import { mount } from 'ascii.rest'
 import { facilities } from './facilities'
+import { useWorldSetting } from './WorldSetting'
 import { statusCode, type Selection, type World, type Status } from '../model/types'
 
 function Ambient({ active }: { active: boolean }) {
@@ -10,12 +11,10 @@ function Ambient({ active }: { active: boolean }) {
   useEffect(() => {
     if (!ref.current) return
     try {
-      const scene = piece({ name: 'agentarium-base', cols: 100, rows: 34, fps: active ? 12 : 0 }, (t, surface) => {
+      const scene = piece({ name: 'agentarium-base', cols: 100, rows: 34, fps: active ? 12 : 0 }, (_t, surface) => {
         for (let y = 1; y < 34; y += 3) for (let x = 2; x < 100; x += 5) surface.set(x, y, '.')
         for (let x = 17; x < 84; x += 2) { surface.set(x, 15, '-'); surface.set(x, 17, '-') }
         for (let y = 7; y < 29; y += 2) { surface.set(17, y, ':'); surface.set(82, y, ':') }
-        surface.write(3, 31, '[ SECTOR 01 / LOCAL OBSERVATION ]')
-        surface.write(78, 31, active && Math.floor(t) % 2 ? '[ SIGNAL . ]' : '[ SIGNAL : ]')
       })
       return mount(ref.current, scene)
     } catch { setFailed(true) }
@@ -32,9 +31,13 @@ export class SceneBoundary extends Component<{ children: ReactNode }, { failed: 
 export function Scene({ world, selection, onSelect, animate, disconnected }: {
   world: World; selection: Selection; onSelect: (s: Selection) => void; animate: boolean; disconnected: boolean
 }) {
+  const setting = useWorldSetting()
+  const live = animate && !disconnected && world.actions.some(a => a.status === 'running')
   return <div className="scene" aria-label="智能体基地地图" onClick={e => { if (e.target === e.currentTarget) onSelect(null) }}>
-    <Ambient active={animate && !disconnected && world.actions.some(a => a.status === 'running')} />
+    <Ambient active={live} />
     <span className="map-axis axis-left">N / 001</span><span className="map-axis axis-right">BASE MAP</span>
+    <span className="scene-tag tag-left" aria-hidden="true">SECTOR 01 / LOCAL OBSERVATION</span>
+    <span className={`scene-tag tag-right ${live ? 'live' : ''}`} aria-hidden="true">SIGNAL <i className="signal-dot" /></span>
     {facilities.filter(f => f.id !== 'utility' || world.actions.some(a => a.facility === 'utility')).map(f => {
       const actions = world.actions.filter(a => a.facility === f.id)
       const active = actions.filter(a => a.status === 'running' || a.status === 'waiting')
@@ -43,10 +46,10 @@ export function Scene({ world, selection, onSelect, animate, disconnected }: {
       const selectedActor = selection?.type === 'actor' && world.actors.find(a => a.id === selection.id)?.facility === f.id
       const selectedEvent = selection?.type === 'event' ? world.events.find(e => e.id === selection.id) : undefined
       const selectedAction = (selection?.type === 'action' && world.actions.find(a => a.id === selection.id)?.facility === f.id)
-        || (selectedEvent?.callId && world.actions.find(a => a.latest.callId === selectedEvent.callId)?.facility === f.id)
-      return <button key={f.id} className={`facility facility-${f.id} state-${state} ${selected || selectedActor || selectedAction ? 'selected' : ''}`} style={{ left: `${f.x}%`, top: `${f.y}%` }} onClick={() => onSelect({ type: 'facility', id: f.id })} aria-label={`${f.name}，${active.length} 个活动调用`}>
+        || (selectedEvent?.callId && world.actions.find(a => a.latest.callId === selectedEvent.callId && a.latest.sessionId === selectedEvent.sessionId)?.facility === f.id)
+      return <button key={f.id} className={`facility facility-${f.id} state-${state} ${selected || selectedActor || selectedAction ? 'selected' : ''}`} style={{ left: `${f.x}%`, top: `${f.y}%` }} onClick={() => onSelect({ type: 'facility', id: f.id })} aria-label={`${setting.facilities[f.id] ?? f.name}，${active.length} 个活动调用`}>
         <pre aria-hidden="true">{f.art}</pre>
-        <span className="facility-label">{f.name}<span>{f.code}</span></span>
+        <span className="facility-label">{setting.facilities[f.id] ?? f.name}<span>{f.code}</span></span>
         {actions.length > 0 && <span className="facility-state">{statusCode[state]}{active.length > 1 ? ` ×${active.length}` : ''}</span>}
       </button>
     })}
@@ -54,7 +57,7 @@ export function Scene({ world, selection, onSelect, animate, disconnected }: {
       const f = facilities.find(f => f.id === actor.facility) ?? facilities.find(f => f.id === 'hq')!
       const siblings = world.actors.filter(a => a.facility === actor.facility)
       const offset = siblings.findIndex(a => a.id === actor.id)
-      return <button key={actor.id} className={`map-actor actor-color-${i % 4} ${selection?.type === 'actor' && selection.id === actor.id ? 'selected' : ''}`} style={{ left: `${f.x + (offset % 2 ? -13 : 13)}%`, top: `${f.y + (f.id === 'portal' ? -8 : 2) + Math.floor(offset / 2) * 9}%` }} onClick={() => onSelect({ type: 'actor', id: actor.id })} aria-label={`查看 ${actor.label} ${actor.name}`}>
+      return <button key={actor.id} className={`map-actor ${animate && actor.status === 'running' ? 'actor-moving' : ''} actor-color-${i % 4} ${selection?.type === 'actor' && selection.id === actor.id ? 'selected' : ''}`} style={{ left: `${Math.max(4, Math.min(96, f.x + (offset % 2 ? -13 : 13)))}%`, top: `${Math.min(89, f.y + (f.id === 'portal' ? -8 : 2) + Math.floor(offset / 2) * 9)}%` }} onClick={() => onSelect({ type: 'actor', id: actor.id })} aria-label={`查看 ${actor.label} ${actor.name}`}>
         <pre aria-hidden="true">{actor.visibility === 'external' ? ' ? \n/|\\\n/ \\' : ' o \n/|\\\n/ \\'}</pre><span>{actor.label}</span>
       </button>
     })}

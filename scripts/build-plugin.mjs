@@ -9,13 +9,14 @@ const reactDomRequire = createRequire(require.resolve('react-dom/package.json'))
 const out = 'dist/plugin'
 await mkdir(`${out}/lib`, { recursive: true })
 const manifest = {
-  name: 'dsh-agentarium', version: '0.1.0', private: true, type: 'module',
-  description: 'Experimental read-only Agentarium conversation view. Verified against dsh 687f282e8625.',
+  name: 'dsh-agentarium', version: '0.2.0', type: 'module',
+  description: 'Project-themed ASCII trace visualization for DeepSeek Harness.',
+  engines: { node: '>=22.12.0', dsh: '>=0.2.1-rc.2 <0.3.0' },
   main: './lib/index.js', exports: { '.': './lib/index.js', './client': './lib/client.js', './package.json': './package.json' },
   files: ['lib', 'cordis.patch.yml', 'THIRD_PARTY_NOTICES.md', 'README.md'],
   dsh: {
     bundle: { patch: './cordis.patch.yml' },
-    client: { platform: 'web', inject: ['@deepseek-ai/dsh-api-session-controller', '@deepseek-ai/dsh-client-ui-conversation', '@deepseek-ai/dsh-client-ui-renderer', '@deepseek-ai/dsh-client-connection'] },
+    client: { platform: 'web', external: ['react', 'react/jsx-runtime'], inject: ['@deepseek-ai/dsh-api-session-controller', '@deepseek-ai/dsh-api-workspace-files', '@deepseek-ai/dsh-client-ui-conversation', '@deepseek-ai/dsh-client-ui-renderer', '@deepseek-ai/dsh-client-connection', '@deepseek-ai/dsh-client-ui-session', '@deepseek-ai/dsh-client-ui-workspace'] },
   },
 }
 await build({ entryPoints: ['src/dsh/host.ts'], outfile: `${out}/lib/index.js`, bundle: true, format: 'esm', platform: 'node', target: 'es2022' })

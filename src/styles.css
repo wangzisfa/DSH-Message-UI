@@ -1,65 +1,107 @@
 .agentarium {
-  --bg: #11140f;
-  --panel: #171b15;
-  --map: #10150e;
-  --raised: #20261c;
-  --line: #30382b;
-  --text: #e4e8dc;
-  --muted: #a0ac95;
-  --subtle: #78866c;
-  --accent: #c7e99b;
-  --accent-soft: #293522;
-  --red: #f49b8b;
-  --amber: #e8c57d;
-  --blue: #a2c6d9;
-  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  /* 表面：优先跟随宿主 --dsw-* 令牌，回退为 dsh 官方深色令牌等值 */
+  --bg: var(--dsw-alias-bg-base, rgb(21 21 23));
+  --panel: var(--dsw-specific-sidebar-fill, rgb(27 27 28));
+  --map: rgb(15 17 21);
+  --raised: var(--dsw-alias-interactive-bg-hover-solid, rgb(53 54 56));
+  /* 发丝边框 */
+  --line: var(--dsw-alias-border-l1, rgb(255 255 255 / .06));
+  --line-strong: var(--dsw-alias-border-l2, rgb(255 255 255 / .12));
+  /* 文字分级 */
+  --text: var(--dsw-alias-label-primary, rgb(249 250 251));
+  --muted: var(--dsw-alias-label-secondary, rgb(207 211 214));
+  --subtle: var(--dsw-alias-label-tertiary, rgb(173 178 184));
+  /* DeepSeek 品牌蓝与状态语义色 */
+  --accent: var(--dsw-alias-state-business-primary, rgb(122 170 255));
+  --accent-ink: rgb(15 17 21);
+  --accent-soft: rgb(122 170 255 / .13);
+  --accent-line: rgb(122 170 255 / .45);
+  --green: var(--dsw-alias-state-success-secondary, rgb(78 209 126));
+  --green-soft: rgb(78 209 126 / .13);
+  --amber: var(--dsw-alias-state-warn-secondary, rgb(247 173 49));
+  --amber-soft: rgb(247 173 49 / .1);
+  --amber-line: rgb(247 173 49 / .35);
+  --red: var(--dsw-alias-state-error-primary, rgb(242 90 90));
+  --red-soft: rgb(242 90 90 / .13);
+  /* 交互 */
+  --hover: var(--dsw-alias-interactive-bg-hover, rgb(255 255 255 / .08));
+  --active: var(--dsw-alias-interactive-bg-active, rgb(255 255 255 / .14));
+  /* 形状、阴影与动效 */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --shadow: 0 0 0 .5px var(--line), 0 16px 40px rgb(0 0 0 / .4);
+  --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   color: var(--text);
   background: var(--bg);
-  font: 13px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font: 13px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   min-height: 100dvh;
   color-scheme: dark;
   accent-color: var(--accent);
-  scrollbar-color: var(--line) var(--bg);
+  scrollbar-color: var(--line-strong) var(--bg);
   font-variant-numeric: tabular-nums;
 }
 .agentarium[data-theme='light'] {
-  --bg: #f4f5ef; --panel: #fcfcf7; --map: #edf0e5; --raised: #e5eadc; --line: #ccd3c1;
-  --text: #283123; --muted: #56634b; --subtle: #697660; --accent: #416322; --accent-soft: #e2ebd7;
-  --red: #a13727; --amber: #82600e; --blue: #386579; color-scheme: light;
+  --bg: var(--dsw-alias-bg-base, rgb(255 255 255));
+  --panel: var(--dsw-specific-sidebar-fill, rgb(249 250 251));
+  --map: rgb(241 243 245);
+  --raised: var(--dsw-alias-interactive-bg-hover-solid, rgb(241 243 245));
+  --line: var(--dsw-alias-border-l1, rgb(0 0 0 / .06));
+  --line-strong: var(--dsw-alias-border-l2, rgb(0 0 0 / .1));
+  --text: var(--dsw-alias-label-primary, rgb(15 17 21));
+  --muted: var(--dsw-alias-label-secondary, rgb(97 102 107));
+  --subtle: var(--dsw-alias-label-tertiary, rgb(129 133 140));
+  --accent: var(--dsw-alias-state-business-primary, rgb(65 118 230));
+  --accent-ink: rgb(255 255 255);
+  --accent-soft: rgb(65 118 230 / .09);
+  --accent-line: rgb(65 118 230 / .4);
+  --green: var(--dsw-alias-state-success-primary, rgb(34 197 94));
+  --green-soft: rgb(34 197 94 / .1);
+  --amber: var(--dsw-alias-state-warn-label, rgb(221 134 41));
+  --amber-soft: rgb(221 134 41 / .08);
+  --amber-line: rgb(221 134 41 / .3);
+  --red: var(--dsw-alias-state-error-primary, rgb(236 19 19));
+  --red-soft: rgb(236 19 19 / .08);
+  --hover: var(--dsw-alias-interactive-bg-hover, rgb(38 49 72 / .06));
+  --active: var(--dsw-alias-interactive-bg-active, rgb(38 49 72 / .1));
+  --shadow: 0 0 0 .5px var(--line), 0 16px 40px rgb(15 17 21 / .12);
+  color-scheme: light;
 }
 .agentarium *, .agentarium *::before, .agentarium *::after { box-sizing: border-box; }
-.agentarium ::selection { color: var(--bg); background: var(--accent); }
+.agentarium ::selection { color: var(--accent-ink); background: var(--accent); }
 .agentarium :where(button, select, input) { font: inherit; color: inherit; }
 .agentarium button { cursor: pointer; border: 0; background: transparent; padding: 0; }
 .agentarium button:disabled { cursor: not-allowed; opacity: .4; }
-.agentarium :where(button, a, input, select, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 3px; }
-.agentarium button { transition: background 140ms, color 140ms, border-color 140ms; }
+.agentarium :where(button, a, input, select, summary, textarea):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.agentarium button { transition: background 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease), box-shadow 160ms var(--ease); }
 .agentarium :where(h1, h2, h3, p, pre) { margin: 0; }
-.agentarium h1 { font-size: 27px; line-height: 1.4; letter-spacing: -.035em; font-weight: 550; }
-.agentarium h2 { font-size: 13px; font-weight: 550; }
-.agentarium h3 { font-size: 18px; font-weight: 550; overflow-wrap: anywhere; }
+.agentarium h1 { font-size: 27px; line-height: 1.4; letter-spacing: -.03em; font-weight: 600; }
+.agentarium h2 { font-size: 13px; font-weight: 500; }
+.agentarium h3 { font-size: 18px; font-weight: 600; overflow-wrap: anywhere; }
 .agentarium small { font-size: 11px; }
 .agentarium .mono, .agentarium pre, .agentarium time { font-family: var(--mono); }
 .agentarium .muted { color: var(--muted); }
 .agentarium .state-running { color: var(--accent); }
 .agentarium .state-failed { color: var(--red); }
-.agentarium .state-waiting { color: var(--amber); }
-.agentarium .state-succeeded { color: var(--accent); }
+.agentarium .state-waiting, .agentarium .state-blocked { color: var(--amber); }
+.agentarium .state-succeeded { color: var(--green); }
 .agentarium .state-unknown, .agentarium .state-idle, .agentarium .state-cancelled { color: var(--muted); }
 .agentarium .actor-color-0 { color: var(--accent); }
-.agentarium .actor-color-1 { color: var(--blue); }
+.agentarium .actor-color-1 { color: var(--green); }
 .agentarium .actor-color-2 { color: var(--amber); }
 .agentarium .actor-color-3 { color: var(--muted); }
-.agentarium .icon-button { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; color: var(--muted); flex-shrink: 0; }
-.agentarium .icon-button:hover, .agentarium .icon-button.active { background: var(--raised); color: var(--accent); }
+.agentarium .icon-button { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-sm); color: var(--muted); flex-shrink: 0; }
+.agentarium .icon-button:hover { background: var(--hover); color: var(--text); }
+.agentarium .icon-button.active { background: var(--active); color: var(--accent); }
 .agentarium .app-header { height: 65px; display: flex; align-items: center; padding: 0 34px; gap: 24px; border-bottom: 1px solid var(--line); }
 .agentarium .brand { display: flex; align-items: center; gap: 12px; }
 .agentarium .brand strong { font-family: var(--mono); font-size: 20px; font-weight: 500; letter-spacing: -.045em; }
-.agentarium .brand-mark { display: flex; align-items: baseline; font: 23px var(--mono); background: var(--accent); color: var(--bg); width: 34px; height: 34px; padding: 2px 3px; border-radius: 3px; font-weight: 700; }
+.agentarium .brand-mark { display: flex; align-items: baseline; font: 23px var(--mono); background: var(--accent); color: var(--accent-ink); width: 34px; height: 34px; padding: 2px 3px; border-radius: var(--r-md); font-weight: 700; }
 .agentarium .brand-mark span { font-size: 16px; }
-.agentarium .version { color: var(--muted); font: 10px var(--mono); margin-top: 4px; }
+.agentarium .version { color: var(--subtle); font: 10px var(--mono); margin-top: 4px; }
 .agentarium .demo-badge { margin-left: auto; display: flex; align-items: center; gap: 8px; color: var(--accent); font: 10px var(--mono); }
-.agentarium .demo-badge > span:first-child { width: 5px; height: 5px; background: currentColor; }
+.agentarium .demo-badge > span:first-child { width: 5px; height: 5px; border-radius: 1px; background: currentColor; }
 .agentarium .demo-badge .demo-explain { color: var(--muted); font-family: inherit; margin-left: 7px; }
 .agentarium .session-bar { display: flex; align-items: center; justify-content: space-between; padding: 0 34px; border-bottom: 1px solid var(--line); gap: 20px; }
 .agentarium .session-title { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 12px; }
@@ -73,15 +115,18 @@
 .agentarium main { max-width: 1740px; padding: 0 34px; margin: auto; }
 .agentarium .demo-toolbar { display: flex; gap: 18px; align-items: center; padding: 16px 0 0; font-size: 11px; color: var(--muted); }
 .agentarium .demo-toolbar label { display: flex; align-items: center; gap: 9px; }
-.agentarium select { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 28px 6px 9px; font-size: 11px; max-width: 230px; }
+.agentarium select { background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--r-md); padding: 6px 28px 6px 10px; font-size: 11px; max-width: 230px; }
 .agentarium .demo-playback { display: flex; gap: 8px; align-items: center; }
-.agentarium .play-button { display: inline-flex; align-items: center; gap: 6px; color: var(--text); }
-.agentarium .connection-button { display: flex; align-items: center; gap: 6px; padding-left: 16px; border-left: 1px solid var(--line); }
-.agentarium .segmented { display: flex; background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 3px; }
-.agentarium .segmented button { padding: 3px 10px; color: var(--muted); font-size: 11px; border-radius: 3px; white-space: nowrap; }
+.agentarium .play-button { display: inline-flex; align-items: center; gap: 6px; color: var(--text); padding: 5px 9px; border-radius: var(--r-sm); }
+.agentarium .play-button:hover:not(:disabled) { background: var(--hover); }
+.agentarium .connection-button { display: flex; align-items: center; gap: 6px; padding: 5px 9px 5px 16px; border-left: 1px solid var(--line-strong); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.agentarium .connection-button:hover { background: var(--hover); }
+.agentarium .segmented { display: flex; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); padding: 3px; }
+.agentarium .segmented button { padding: 3px 10px; color: var(--muted); font-size: 11px; border-radius: var(--r-sm); white-space: nowrap; }
+.agentarium .segmented button:hover { color: var(--text); }
 .agentarium .segmented button[aria-pressed='true'] { background: var(--raised); color: var(--text); }
 .agentarium .mode-switch { margin-left: auto; }
-.agentarium .replay-bar { display: flex; align-items: center; gap: 14px; padding: 12px 15px; background: var(--accent-soft); margin-top: 14px; color: var(--accent); font-size: 11px; }
+.agentarium .replay-bar { display: flex; align-items: center; gap: 14px; padding: 12px 15px; background: var(--accent-soft); border-radius: var(--r-lg); margin-top: 14px; color: var(--accent); font-size: 11px; }
 .agentarium .replay-bar input { flex: 1; min-width: 80px; }
 .agentarium .mission-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 30px 0 26px; }
 .agentarium .mission-heading p { color: var(--muted); font-size: 12px; margin-top: 8px; }
@@ -89,61 +134,75 @@
 .agentarium .mission-status { display: grid; grid-template-columns: 7px auto; align-items: center; gap: 4px 9px; font-size: 12px; }
 .agentarium .mission-status small { grid-column: 2; color: var(--muted); text-align: right; }
 .agentarium .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.agentarium .status-strip { display: flex; align-items: center; gap: 27px; height: 47px; padding: 0 18px; border: 1px solid var(--line); border-bottom: none; background: var(--panel); font-size: 11px; color: var(--muted); }
+.agentarium .status-strip { display: flex; align-items: center; gap: 27px; min-height: 47px; padding: 0 18px; border: 1px solid var(--line); border-radius: var(--r-lg); margin-top: 14px; background: var(--panel); font-size: 11px; color: var(--muted); }
 .agentarium .status-strip > span, .agentarium .status-strip > button { display: inline-flex; align-items: center; gap: 9px; }
-.agentarium .status-strip b { font: 15px var(--mono); color: var(--text); }
+.agentarium .status-strip > button { padding: 4px 7px; margin: -4px -7px; border-radius: var(--r-sm); }
+.agentarium .status-strip > button:hover { background: var(--hover); }
+.agentarium .status-strip b { font: 15px var(--mono); color: var(--text); font-weight: 500; }
 .agentarium .status-strip .state-failed b { color: var(--red); }
 .agentarium .status-strip .state-waiting b { color: var(--amber); }
-.agentarium .strip-live { color: var(--accent); font: 11px var(--mono); padding-right: 24px; border-right: 1px solid var(--line); }
+.agentarium .strip-live { color: var(--accent); font: 11px var(--mono); padding-right: 24px; border-right: 1px solid var(--line-strong); }
 .agentarium .strip-end { margin-left: auto; }
-.agentarium .history-notice { padding: 9px 16px; color: var(--amber); font-size: 12px; border: 1px solid var(--line); display: flex; gap: 18px; flex-wrap: wrap; }
+.agentarium .history-notice { padding: 10px 16px; color: var(--amber); background: var(--amber-soft); font-size: 12px; border: 1px solid var(--amber-line); border-radius: var(--r-lg); margin-top: 14px; display: flex; gap: 18px; flex-wrap: wrap; }
 .agentarium .history-notice button { display: flex; align-items: center; gap: 5px; text-decoration: underline; text-underline-offset: 4px; }
-.agentarium .workbench { display: grid; grid-template-columns: 205px minmax(0, 1fr) 270px; border: 1px solid var(--line); background: var(--panel); }
+.agentarium .workbench { display: grid; grid-template-columns: 205px minmax(0, 1fr) 270px; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; margin-top: 14px; background: var(--panel); }
 .agentarium .panel-heading { display: flex; justify-content: space-between; align-items: center; height: 44px; color: var(--muted); font-size: 11px; padding: 0 17px; }
 .agentarium .panel-heading > span { display: flex; align-items: center; gap: 6px; }
 .agentarium .roster { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--line); }
 .agentarium .roster-list { padding: 3px 7px; }
-.agentarium .crew { width: 100%; display: flex; text-align: left; gap: 9px; padding: 16px 8px; border-radius: 4px; align-items: flex-start; }
+.agentarium .crew { width: 100%; display: flex; text-align: left; gap: 9px; padding: 14px 8px; border-radius: var(--r-md); align-items: flex-start; }
 .agentarium .crew + .crew { border-top: 1px solid var(--line); }
-.agentarium .crew:hover, .agentarium .crew.selected { background: var(--raised); }
-.agentarium .crew-avatar { width: 32px; height: 33px; flex-shrink: 0; display: grid; place-items: center; font: 15px var(--mono); background: var(--raised); border-radius: 3px; }
+.agentarium .crew:hover { background: var(--hover); }
+.agentarium .crew.selected { background: var(--active); box-shadow: inset 2px 0 0 var(--accent); }
+.agentarium .crew-avatar { width: 32px; height: 33px; flex-shrink: 0; display: grid; place-items: center; font: 15px var(--mono); background: var(--raised); border-radius: var(--r-sm); }
 .agentarium .crew-info { display: flex; flex-direction: column; gap: 2px; }
 .agentarium .crew-info strong { font-size: 12px; font-weight: 500; }
 .agentarium .crew-info small { font: 9px/1.7 var(--mono); color: var(--muted); }
 .agentarium .crew-state { font: 9px/1.8 var(--mono); padding-top: 5px; }
 .agentarium .crew-state > span { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; margin-left: 2px; }
-.agentarium .crew-count { margin-left: auto; font: 9px var(--mono); color: var(--muted); padding-top: 5px; }
-.agentarium .roster-note { display: flex; align-items: flex-start; gap: 8px; padding: 22px 15px; margin-top: auto; color: var(--muted); font-size: 10px; }
+.agentarium .crew-count { margin-left: auto; font: 9px var(--mono); color: var(--subtle); padding-top: 5px; }
+.agentarium .roster-note { display: flex; align-items: flex-start; gap: 8px; padding: 22px 15px; margin-top: auto; color: var(--subtle); font-size: 10px; }
 .agentarium .roster-note svg { flex-shrink: 0; margin-top: 3px; }
 .agentarium .roster-note span { display: block; font-size: 9px; margin-top: 3px; }
 .agentarium .map-panel { background: var(--map); min-width: 0; display: flex; flex-direction: column; }
 .agentarium .map-toolbar { height: 44px; padding: 0 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); font-size: 11px; }
 .agentarium .map-toolbar > span { display: flex; gap: 8px; align-items: center; }
-.agentarium .map-toolbar small { font: 8px var(--mono); color: var(--muted); margin-left: 3px; }
+.agentarium .map-toolbar small { font: 8px var(--mono); color: var(--subtle); margin-left: 3px; }
 .agentarium .tiny-square { width: 5px; height: 5px; display: inline-block; background: var(--accent); }
 .agentarium .scene { position: relative; height: 408px; min-height: 408px; overflow: hidden; isolation: isolate; flex: 1; container-type: inline-size; }
-.agentarium .ambient { position: absolute; width: 100%; height: 100%; overflow: hidden; color: var(--subtle); opacity: .35; font-size: 1.65cqw; line-height: 12px; padding: 8px 0; user-select: none; pointer-events: none; }
-.agentarium .map-axis { position: absolute; top: 15px; font: 8px var(--mono); color: var(--muted); }
+.agentarium .ambient { position: absolute; width: 100%; height: 100%; overflow: hidden; color: var(--subtle); opacity: .26; font-size: 1.65cqw; line-height: 12px; padding: 8px 0; user-select: none; pointer-events: none; }
+.agentarium .map-axis { position: absolute; top: 15px; font: 8px var(--mono); letter-spacing: .08em; color: var(--subtle); }
 .agentarium .axis-left { left: 17px; }.agentarium .axis-right { right: 17px; }
-.agentarium .facility { position: absolute; transform: translate(-50%, -50%); min-width: 120px; padding: 7px 5px; text-align: center; border-radius: 5px; border: 1px solid transparent; }
-.agentarium .facility:hover, .agentarium .facility.selected { background: var(--panel); border-color: var(--line); }
-.agentarium .facility.selected { border-color: var(--accent); }
+.agentarium .scene-tag { position: absolute; bottom: 10px; font: 8px var(--mono); letter-spacing: .08em; color: var(--subtle); user-select: none; pointer-events: none; }
+.agentarium .tag-left { left: 17px; }
+.agentarium .tag-right { right: 17px; display: inline-flex; align-items: center; gap: 5px; }
+.agentarium .scene-tag .signal-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
+.agentarium .scene-tag.live { color: var(--accent); }
+.agentarium .scene-tag.live .signal-dot { background: var(--accent); animation: agentarium-signal 1200ms var(--ease) infinite; }
+@keyframes agentarium-signal { 50% { opacity: .3; } }
+.agentarium .facility { position: absolute; transform: translate(-50%, -50%); min-width: 120px; padding: 7px 5px; text-align: center; border-radius: var(--r-md); border: 1px solid transparent; }
+.agentarium .facility:hover { background: var(--panel); border-color: var(--line-strong); }
+.agentarium .facility.selected { background: var(--panel); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-line); }
 .agentarium .facility pre { font-size: 11px; line-height: 1.15; font-weight: 500; text-align: left; white-space: pre; width: max-content; margin: auto; }
 .agentarium .facility.state-idle pre { color: var(--subtle); }
 .agentarium .facility-label { display: flex; flex-direction: column; margin-top: 6px; color: var(--text); font-size: 10px; }
-.agentarium .facility-label span { color: var(--muted); font: 8px/1.7 var(--mono); letter-spacing: .05em; }
-.agentarium .facility-state { position: absolute; font: 8px var(--mono); top: 2px; right: 0; padding: 2px 4px; background: var(--map); }
+.agentarium .facility-label span { color: var(--subtle); font: 8px/1.7 var(--mono); letter-spacing: .05em; }
+.agentarium .facility-state { position: absolute; font: 8px var(--mono); top: 2px; right: 0; padding: 2px 5px; border-radius: 4px; background: color-mix(in srgb, var(--muted) 16%, var(--map)); color: var(--muted); }
+.agentarium .facility.state-running .facility-state { background: color-mix(in srgb, var(--accent) 18%, var(--map)); color: var(--accent); }
+.agentarium .facility.state-waiting .facility-state { background: color-mix(in srgb, var(--amber) 20%, var(--map)); color: var(--amber); }
+.agentarium .facility.state-failed .facility-state { background: color-mix(in srgb, var(--red) 20%, var(--map)); color: var(--red); }
+.agentarium .facility.state-succeeded .facility-state { background: color-mix(in srgb, var(--green) 20%, var(--map)); color: var(--green); }
 .agentarium .facility-hq pre { color: var(--accent); }.agentarium .facility-hq { margin-top: 5px; }
-.agentarium .map-actor { position: absolute; transform: translate(-50%, -50%); z-index: 2; padding: 6px; border-radius: 3px; }
+.agentarium .map-actor { position: absolute; transform: translate(-50%, -50%); z-index: 2; padding: 6px; border-radius: var(--r-sm); }
 .agentarium .map-actor:hover, .agentarium .map-actor.selected { background: var(--raised); outline: 1px solid currentColor; }
 .agentarium .map-actor pre { font-size: 11px; line-height: 1.1; text-align: left; }
-.agentarium .map-actor > span { font: 8px var(--mono); background: var(--map); padding: 1px 3px; }
+.agentarium .map-actor > span { font: 8px var(--mono); background: var(--panel); border: 1px solid var(--line-strong); padding: 1px 5px; border-radius: 4px; }
 .agentarium .map-legend { display: flex; align-items: center; gap: 14px; min-height: 35px; border-top: 1px solid var(--line); padding: 0 14px; color: var(--muted); font-size: 9px; }
 .agentarium .map-legend > span { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-.agentarium .map-legend i { width: 4px; height: 4px; background: var(--muted); }
+.agentarium .map-legend i { width: 4px; height: 4px; border-radius: 1px; background: var(--muted); }
 .agentarium .map-legend .dot-running { background: var(--accent); }.agentarium .map-legend .dot-waiting { background: var(--amber); }.agentarium .map-legend .dot-failed { background: var(--red); }
 .agentarium .map-legend small { font-size: 9px; margin-left: auto; }
-.agentarium .connection-overlay, .agentarium .empty-scene { position: absolute; left: 50%; top: 48%; transform: translate(-50%, -50%); width: max-content; max-width: 95%; background: var(--panel); border: 1px solid var(--line); padding: 15px 20px; z-index: 4; text-align: center; color: var(--amber); }
+.agentarium .connection-overlay, .agentarium .empty-scene { position: absolute; left: 50%; top: 48%; transform: translate(-50%, -50%); width: max-content; max-width: 95%; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 15px 20px; z-index: 4; text-align: center; color: var(--amber); }
 .agentarium .connection-overlay small, .agentarium .empty-scene small { display: block; color: var(--muted); margin-top: 4px; font-size: 11px; }
 .agentarium .empty-scene { color: var(--accent); }
 .agentarium .scene-fallback { padding: 50px 20px; color: var(--amber); }.agentarium .renderer-notice { position: absolute; bottom: 4px; font-size: 10px; }
@@ -153,36 +212,38 @@
 .agentarium .inspector-content > p { font-size: 11px; line-height: 1.9; margin-top: 14px; }
 .agentarium .inspector-content .status { display: inline-block; font-size: 10px; margin: 5px 0 14px; }
 .agentarium dl { display: grid; grid-template-columns: 68px minmax(0, 1fr); gap: 7px; font-size: 10px; margin: 8px 0 17px; }
-.agentarium dt { color: var(--muted); }.agentarium dd { margin: 0; overflow-wrap: anywhere; }
+.agentarium dt { color: var(--subtle); }.agentarium dd { margin: 0; overflow-wrap: anywhere; }
 .agentarium .evidence-note { border-top: 1px solid var(--line); padding-top: 12px; font-size: 11px; margin-top: 16px; }
-.agentarium .evidence-note > span { color: var(--muted); font-size: 10px; }.agentarium .evidence-note p { margin: 6px 0; }
-.agentarium .evidence-note small { color: var(--muted); font-size: 9px; }
+.agentarium .evidence-note > span { color: var(--subtle); font-size: 10px; }.agentarium .evidence-note p { margin: 6px 0; }
+.agentarium .evidence-note small { color: var(--subtle); font-size: 9px; }
 .agentarium details { margin: 15px 0; font-size: 10px; }.agentarium summary { cursor: pointer; color: var(--muted); }
-.agentarium details pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg); padding: 10px; margin-top: 8px; font-size: 10px; }
+.agentarium details pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--map); border-radius: var(--r-md); padding: 10px; margin-top: 8px; font-size: 10px; }
 .agentarium .trace-link { color: var(--accent); display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 9px 0; margin-top: 14px; }
 .agentarium .trace-link:hover { text-decoration: underline; text-underline-offset: 4px; }
 .agentarium .notice { color: var(--amber); }
 .agentarium .facility-actions { margin-top: 15px; }.agentarium .facility-actions button { padding: 10px 0; width: 100%; display: flex; justify-content: space-between; font-size: 11px; border-top: 1px solid var(--line); }
+.agentarium .facility-actions button:hover { color: var(--accent); }
 .agentarium .depot { margin-top: auto; border-top: 1px solid var(--line); }
 .agentarium .depot p { padding: 0 18px 17px; color: var(--muted); font-size: 11px; }.agentarium .depot p span { display: block; font-size: 10px; margin-top: 3px; }
 .agentarium .artifact { display: flex; align-items: center; gap: 7px; color: var(--accent); padding: 4px 17px 17px; font-size: 10px; }
-.agentarium .event-panel { border: 1px solid var(--line); margin-top: 16px; background: var(--panel); }
+.agentarium .event-panel { border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; margin-top: 16px; background: var(--panel); }
 .agentarium .event-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 17px; }
-.agentarium .event-heading h2 { display: flex; align-items: center; gap: 8px; }.agentarium .event-heading h2 span { color: var(--muted); font: 10px var(--mono); margin-left: 3px; }
+.agentarium .event-heading h2 { display: flex; align-items: center; gap: 8px; }.agentarium .event-heading h2 span { color: var(--subtle); font: 10px var(--mono); margin-left: 3px; }
 .agentarium .event-controls { display: flex; align-items: center; gap: 12px; }.agentarium .event-controls .segmented { border: none; background: var(--bg); }
-.agentarium .event-controls i { display: inline-block; width: 4px; height: 4px; background: var(--amber); margin: 0 0 2px 6px; }
+.agentarium .event-controls i { display: inline-block; width: 4px; height: 4px; border-radius: 1px; background: var(--amber); margin: 0 0 2px 6px; }
 .agentarium .event-list { max-height: 230px; overflow-y: auto; }
 .agentarium .event-row { width: 100%; display: grid; grid-template-columns: 74px 15px 34px 118px minmax(0, 1fr) 50px; align-items: center; gap: 10px; padding: 11px 18px; border-top: 1px solid var(--line); text-align: left; font-size: 11px; }
-.agentarium .event-row:hover, .agentarium .event-row.selected { background: var(--raised); }.agentarium .event-row time { font-size: 10px; color: var(--muted); }
+.agentarium .event-row:hover { background: var(--hover); }.agentarium .event-row.selected { background: var(--active); box-shadow: inset 2px 0 0 var(--accent); }.agentarium .event-row time { font-size: 10px; color: var(--subtle); }
 .agentarium .event-marker { font-family: var(--mono); }.agentarium .event-actor { font: 10px var(--mono); color: var(--muted); }
 .agentarium .event-tool { font: 10px var(--mono); overflow: hidden; text-overflow: ellipsis; }.agentarium .event-status { text-align: right; font: 9px var(--mono); }
 .agentarium .event-summary { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .agentarium .empty-events { color: var(--muted); font-size: 12px; padding: 35px; text-align: center; }.agentarium .load-more { padding: 14px; color: var(--accent); width: 100%; font-size: 12px; }
-.agentarium .workflow-footer { display: flex; justify-content: space-between; gap: 20px; padding: 22px 0 25px; color: var(--muted); font: 9px var(--mono); }.agentarium .workflow-footer > span:first-child { display: flex; align-items: center; gap: 7px; }
+.agentarium .load-more:hover { text-decoration: underline; text-underline-offset: 4px; }
+.agentarium .workflow-footer { display: flex; justify-content: space-between; gap: 20px; padding: 22px 0 25px; color: var(--subtle); font: 9px var(--mono); }.agentarium .workflow-footer > span:first-child { display: flex; align-items: center; gap: 7px; }
 .agentarium .chat-preview, .agentarium .trajectory { max-width: 950px; margin: 50px auto; }.agentarium .preview-label { color: var(--amber); font-size: 12px; margin-bottom: 12px; }
-.agentarium .chat-message { margin: 32px 0; display: grid; grid-template-columns: 42px 1fr; padding: 24px; border: 1px solid var(--line); }.agentarium .chat-message > span { color: var(--accent); }.agentarium .chat-message .trace-link { grid-column: 2; }
-.agentarium .trajectory-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 30px; }.agentarium .trajectory-heading p { margin-top: 8px; color: var(--muted); font-size: 12px; }.agentarium .trajectory-heading button { display: flex; align-items: center; gap: 6px; color: var(--accent); flex-shrink: 0; }
-.agentarium .trajectory article { margin: 20px 0; border: 1px solid var(--line); padding: 20px; }.agentarium .trajectory article header { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 15px; }.agentarium .trajectory pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; background: var(--panel); padding: 16px; margin-top: 15px; }
+.agentarium .chat-message { margin: 32px 0; display: grid; grid-template-columns: 42px 1fr; padding: 24px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); }.agentarium .chat-message > span { color: var(--accent); }.agentarium .chat-message .trace-link { grid-column: 2; }
+.agentarium .trajectory-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 30px; }.agentarium .trajectory-heading p { margin-top: 8px; color: var(--muted); font-size: 12px; }.agentarium .trajectory-heading button { display: flex; align-items: center; gap: 6px; color: var(--accent); flex-shrink: 0; padding: 5px 9px; border-radius: var(--r-sm); }.agentarium .trajectory-heading button:hover { background: var(--hover); }
+.agentarium .trajectory article { margin: 20px 0; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); padding: 20px; }.agentarium .trajectory article header { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 15px; }.agentarium .trajectory pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; background: var(--map); border-radius: var(--r-md); padding: 16px; margin-top: 15px; }
 .agentarium.plugin-view { min-height: 100%; padding: 0 20px; }.agentarium.plugin-view .mission-heading h1 { font-size: 23px; }
 @media (min-width: 1600px) { .agentarium .scene { min-height: 475px; }.agentarium .facility pre { font-size: 13px; }.agentarium .workbench { grid-template-columns: 225px minmax(0, 1fr) 290px; } }
 @media (max-width: 1200px) {
@@ -196,11 +257,11 @@
   .agentarium .branch-label, .agentarium .session-title > svg:last-of-type { display: none; }.agentarium .mission-heading h1 { font-size: 25px; }
 }
 @media (max-width: 680px) {
-  .agentarium main { padding: 0 14px; }.agentarium .app-header { padding: 0 15px; height: 58px; gap: 10px; }.agentarium .brand { gap: 8px; }.agentarium .brand strong { font-size: 18px; }.agentarium .brand-mark { height: 29px; width: 29px; font-size: 20px; }.agentarium .version, .agentarium .demo-explain { display: none !important; }
+  .agentarium main { padding: 0 14px; }.agentarium .app-header { padding: 0 15px; height: 58px; gap: 10px; }.agentarium .brand { gap: 8px; }.agentarium .brand strong { font-size: 18px; }.agentarium .brand-mark { height: 29px; width: 29px; font-size: 20px; border-radius: var(--r-sm); }.agentarium .version, .agentarium .demo-explain { display: none !important; }
   .agentarium .session-bar { display: block; padding: 0 15px; }.agentarium .session-title { padding-top: 13px; font-size: 11px; gap: 7px; }.agentarium .view-tabs { gap: 25px; }.agentarium .view-tabs button { padding: 13px 0 11px; font-size: 12px; }
   .agentarium .demo-toolbar { flex-wrap: wrap; gap: 10px 6px; padding-top: 14px; }.agentarium .demo-toolbar label { font-size: 10px; gap: 6px; }.agentarium .demo-toolbar select { max-width: 156px; font-size: 10px; padding-right: 4px; }.agentarium .demo-playback { order: 3; flex-basis: 100%; }.agentarium .mode-switch { margin-left: auto; }.agentarium .segmented button { font-size: 10px; padding-left: 7px; padding-right: 7px; }.agentarium .connection-button { margin-left: auto; }
   .agentarium .mission-heading { padding: 24px 0 20px; gap: 15px; align-items: flex-start; }.agentarium .mission-heading h1 { font-size: 21px; max-width: 240px; }.agentarium .mission-heading p { font-size: 10px; max-width: 230px; }.agentarium .mission-status { font-size: 10px; padding-top: 7px; white-space: nowrap; }.agentarium .mission-status small { font-size: 9px; }
-  .agentarium .status-strip { gap: 14px; padding: 10px 12px; height: auto; flex-wrap: wrap; font-size: 10px; }.agentarium .strip-live { padding-right: 12px; font-size: 9px; }.agentarium .status-strip b { font-size: 12px; }.agentarium .strip-end { display: none !important; }.agentarium .status-strip > span, .agentarium .status-strip > button { gap: 5px; }
+  .agentarium .status-strip { gap: 14px; padding: 10px 12px; min-height: 0; flex-wrap: wrap; font-size: 10px; }.agentarium .strip-live { padding-right: 12px; font-size: 9px; }.agentarium .status-strip b { font-size: 12px; }.agentarium .strip-end { display: none !important; }.agentarium .status-strip > span, .agentarium .status-strip > button { gap: 5px; }
   .agentarium .workbench { display: flex; flex-direction: column; }.agentarium .roster { border: 0; border-bottom: 1px solid var(--line); }.agentarium .roster > .panel-heading { height: 35px; }.agentarium .roster-list { display: grid; grid-template-columns: 1fr 1fr; padding: 0 7px 6px; gap: 2px; }.agentarium .crew { padding: 9px 5px; }.agentarium .crew + .crew { border: 0; }.agentarium .crew-avatar { width: 28px; height: 29px; font-size: 13px; }.agentarium .crew-info strong { font-size: 11px; }.agentarium .crew-state { padding-top: 2px; }.agentarium .roster-note { display: none; }
   .agentarium .scene { height: 370px; min-height: 370px; flex: auto; }.agentarium .facility { min-width: 94px; }.agentarium .facility pre { font-size: 8.5px; }.agentarium .facility-label { font-size: 9px; }.agentarium .facility-label span { font-size: 7px; }.agentarium .map-actor { padding: 3px; }.agentarium .map-actor pre { font-size: 9px; }.agentarium .map-axis { font-size: 7px; }.agentarium .map-legend { gap: 17px; min-height: 33px; }.agentarium .ambient { line-height: 11px; }
   .agentarium .inspector { display: block; }.agentarium .inspector-content { max-height: none; padding-top: 4px; }.agentarium .inspector-content > p { margin-top: 8px; }.agentarium .inspector h3 { font-size: 16px; }.agentarium .depot { border: 0; border-top: 1px solid var(--line); }.agentarium .depot p { padding-bottom: 12px; }
@@ -209,3 +270,43 @@
   .agentarium .trajectory-heading { display: block; }.agentarium .trajectory-heading button { margin-top: 16px; }.agentarium .trajectory article { padding: 12px; }.agentarium .trajectory article header { flex-wrap: wrap; gap: 5px; }
 }
 @media (prefers-reduced-motion: reduce) { .agentarium *, .agentarium *::before, .agentarium *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+
+.agentarium.plugin-view { container: agentarium / inline-size; overflow-y: auto; height: 100%; min-height: 0; }
+.agentarium .plugin-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0 8px; color: var(--accent); font-size: 11px; }
+.agentarium .world-setting-panel { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); padding: 10px 14px; margin: 10px 0 0; font-size: 12px; }
+.agentarium .world-setting-panel summary { color: var(--text); }
+.agentarium .world-setting-panel summary span { margin-left: 12px; color: var(--subtle); font-size: 10px; }
+.agentarium .world-setting-panel p { margin: 10px 0; color: var(--muted); }
+.agentarium .setting-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.agentarium .setting-actions button, .agentarium .approval-notice button { padding: 5px 12px; border: 1px solid var(--line-strong); border-radius: var(--r-md); color: var(--accent); }
+.agentarium .setting-actions button:hover, .agentarium .approval-notice button:hover { background: var(--hover); }
+.agentarium .setting-actions code { color: var(--subtle); font-size: 11px; }
+.agentarium .world-setting-panel textarea { display: block; width: 100%; min-height: 140px; resize: vertical; border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--map); color: var(--text); padding: 10px; font: 12px/1.7 var(--mono); }
+.agentarium .approval-notice { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; border: 1px solid var(--amber-line); border-radius: var(--r-lg); background: var(--amber-soft); padding: 12px; margin-top: 12px; color: var(--amber); }
+.agentarium .actor-moving pre { animation: agentarium-walk 700ms steps(2, end) infinite; }
+@keyframes agentarium-walk { 50% { transform: translateY(-3px); } }
+@container agentarium (max-width: 1100px) {
+  .agentarium .workbench { grid-template-columns: 170px minmax(0, 1fr); }
+  .agentarium .inspector { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 230px; }
+  .agentarium .inspector > .panel-heading { grid-column: 1 / -1; }
+  .agentarium .depot { border-left: 1px solid var(--line); }
+  .agentarium .scene { height: 408px; min-height: 408px; }
+  .agentarium .facility pre { font-size: 10px; }
+}
+@container agentarium (max-width: 680px) {
+  .agentarium .workbench, .agentarium .inspector { display: flex; flex-direction: column; }
+  .agentarium .roster-list { display: grid; grid-template-columns: 1fr 1fr; }
+  .agentarium .roster-note, .agentarium .strip-end, .agentarium .map-legend small { display: none; }
+  .agentarium .status-strip { flex-wrap: wrap; min-height: 0; padding: 10px; gap: 12px; }
+  .agentarium .scene { height: 370px; min-height: 370px; flex: auto; }
+  .agentarium .facility { min-width: 86px; }
+  .agentarium .facility pre { font-size: 8px; }
+  .agentarium .event-row { grid-template-columns: 60px 10px 28px minmax(0, 1fr) 40px; gap: 5px; padding: 10px; }
+  .agentarium .event-tool { display: none; }
+  .agentarium .workflow-footer { flex-wrap: wrap; }
+  .agentarium .depot { border-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .agentarium .actor-moving pre { animation: none; } }
+.agentarium.plugin-view .plugin-toolbar, .agentarium.plugin-view .world-setting-panel summary { color: var(--world-accent, var(--accent)); }
+.agentarium.plugin-view .tiny-square { background: var(--world-accent, var(--accent)); }
+.agentarium .world-request { width: 100%; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--map); }
