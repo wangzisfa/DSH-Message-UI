@@ -20,6 +20,16 @@ export function Inspector({ world, selection, onSelect, onTrace, demo, disconnec
   return <aside className="inspector" aria-label="检查器">
     <div className="panel-heading"><span>现场检查器</span>{selection && <button className="icon-button" aria-label="关闭检查器" onClick={() => onSelect(null)}><X size={15} /></button>}</div>
     <div className="inspector-content" key={`${selection?.type}:${selection?.id}`}>
+      <div className="inspector-channel" aria-hidden="true">INSPECT://{selection?.type.toUpperCase() ?? 'STANDBY'}</div>
+      {facility && <pre className="inspector-art" aria-hidden="true">{facility.art}</pre>}
+      {!selection && <pre className="inspector-reticle" aria-hidden="true">{`   +-------+-------+
+   |   .   |   .   |
+   | .   .-+-.   . |
+   +----(  +  )----+
+   | .   '-+-'   . |
+   |   .   |   .   |
+   +-------+-------+
+      SELECT TARGET`}</pre>}
       <div className="inspector-symbol" aria-hidden="true">{status === 'failed' ? '[ ! ]' : actor ? '[ o ]' : facility ? '[ # ]' : '[ >_ ]'}</div>
       <h3>{title}</h3>
       {status && <span className={`status state-${status}`}>{statusText[status]}</span>}

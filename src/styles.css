@@ -310,3 +310,172 @@
 .agentarium.plugin-view .plugin-toolbar, .agentarium.plugin-view .world-setting-panel summary { color: var(--world-accent, var(--accent)); }
 .agentarium.plugin-view .tiny-square { background: var(--world-accent, var(--accent)); }
 .agentarium .world-request { width: 100%; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--map); }
+
+/* Terminal Colony: animated character machinery and instrument panels. */
+.agentarium .mission-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: var(--subtle); font: 9px var(--mono); letter-spacing: .14em; }
+.agentarium .mission-eyebrow span { color: var(--accent); letter-spacing: 0; }
+.agentarium .mission-eyebrow i { font-style: normal; opacity: .4; }
+.agentarium .mission-heading { padding-top: 26px; padding-bottom: 10px; }
+.agentarium .mission-heading h1 { letter-spacing: -.04em; }
+.agentarium .status-strip { background: linear-gradient(100deg, var(--accent-soft), transparent 30%), var(--panel); }
+.agentarium .status-strip b { animation: agentarium-digit 350ms var(--ease) both; }
+.agentarium .workbench { border-color: var(--line-strong); }
+.agentarium .panel-heading { font-size: 10px; letter-spacing: .06em; border-bottom: 1px solid var(--line); }
+.agentarium .roster-list { padding-top: 8px; }
+.agentarium .crew { transition: background 180ms, box-shadow 180ms, translate 220ms var(--ease); }
+.agentarium .crew:hover { translate: 2px 0; }
+.agentarium .crew.selected .crew-avatar { box-shadow: inset 0 0 0 1px currentColor; background: var(--accent-soft); }
+.agentarium .crew-avatar { background: var(--map); border: 1px solid var(--line-strong); border-radius: 5px; }
+.agentarium .map-toolbar { height: 46px; background: color-mix(in srgb, var(--accent) 3%, var(--map)); }
+.agentarium .map-toolbar small { letter-spacing: .09em; }
+.agentarium .scene {
+  --scene-height: 640px;
+  height: var(--scene-height); min-height: var(--scene-height); flex: none;
+  background: radial-gradient(ellipse at 50% 48%, var(--accent-soft), transparent 62%), var(--map);
+}
+.agentarium .scene::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; opacity: .09; background: repeating-linear-gradient(0deg, transparent 0 3px, var(--map) 3px 4px); }
+.agentarium .ambient { inset: 0; padding: 0; font-size: 1.38889cqw; line-height: calc(var(--scene-height) / 50); letter-spacing: 0; opacity: .2; color: var(--accent); }
+.agentarium .scene-sweep { position: absolute; inset: 0 0 auto; height: 70px; pointer-events: none; background: linear-gradient(transparent, var(--accent-soft)); border-bottom: 1px solid var(--accent-line); opacity: 0; animation: agentarium-sweep 9s linear infinite; }
+.agentarium .scene-hud { position: absolute; top: 17px; left: 18px; right: 18px; display: flex; justify-content: space-between; gap: 10px; color: var(--subtle); font: 8px var(--mono); letter-spacing: .06em; pointer-events: none; }
+.agentarium .scene-hud > span { display: inline-flex; align-items: center; gap: 7px; }
+.agentarium .scene-hud b { color: var(--accent); font-weight: 400; }
+.agentarium .scene-hud i:not(.hud-led) { font-style: normal; opacity: .4; }
+.agentarium .hud-led { width: 4px; height: 4px; background: currentColor; }
+.agentarium .hud-active { color: var(--accent); }
+.agentarium .hud-active .hud-led { animation: agentarium-signal 2.4s ease-in-out infinite; }
+.agentarium .bus-label { position: absolute; left: 4%; top: 48.5%; font: 7px var(--mono); letter-spacing: .1em; color: var(--subtle); background: var(--map); padding: 4px; opacity: .6; pointer-events: none; }
+.agentarium .scene-tag { bottom: 12px; font-size: 7px; letter-spacing: .1em; }
+.agentarium .scene-tag > span { opacity: .7; letter-spacing: 0; }
+.agentarium .facility {
+  --facility-ink: var(--subtle);
+  width: 27%; min-width: 0; padding: 12px 3px 6px; border-radius: 5px; border: 1px solid transparent;
+  color: var(--facility-ink); background: transparent;
+  transition: background 240ms, border-color 240ms, box-shadow 240ms, translate 300ms var(--ease);
+  animation: agentarium-materialize 600ms var(--ease) backwards; animation-delay: var(--enter-delay, 0ms);
+}
+.agentarium .facility.state-running { --facility-ink: var(--accent); }
+.agentarium .facility.state-waiting { --facility-ink: var(--amber); }
+.agentarium .facility.state-failed { --facility-ink: var(--red); }
+.agentarium .facility.state-succeeded { --facility-ink: var(--green); }
+.agentarium .facility-hq { --facility-ink: var(--accent); margin-top: 0; width: 31%; }
+.agentarium .facility.state-unknown { --facility-ink: var(--muted); }
+.agentarium .facility:hover, .agentarium .facility:focus-visible { background: color-mix(in srgb, var(--facility-ink) 5%, var(--map)); border-color: color-mix(in srgb, var(--facility-ink) 35%, transparent); translate: 0 -3px; }
+.agentarium .facility.selected { background: color-mix(in srgb, var(--facility-ink) 8%, var(--map)); border-color: color-mix(in srgb, var(--facility-ink) 45%, transparent); box-shadow: inset 0 0 24px color-mix(in srgb, var(--facility-ink) 5%, transparent); }
+.agentarium .facility pre { font-size: clamp(7px, 1.65cqw, 10px); line-height: 1.2; font-weight: 400; color: var(--facility-ink); transition: color 250ms, filter 250ms; }
+.agentarium .facility.state-idle pre { color: var(--subtle); opacity: .65; }
+.agentarium .facility:hover pre, .agentarium .facility.selected pre { filter: drop-shadow(0 0 4px color-mix(in srgb, var(--facility-ink) 30%, transparent)); opacity: 1; }
+.agentarium .ascii-art { display: block; position: relative; width: max-content; margin: 0 auto; }
+.agentarium .art-scan { position: absolute; inset: -2px -3px; overflow: hidden; pointer-events: none; }
+.agentarium .art-scan::after { content: ''; position: absolute; left: 0; right: 0; top: -25%; height: 22%; background: linear-gradient(transparent, color-mix(in srgb, var(--facility-ink) 15%, transparent)); border-bottom: 1px solid color-mix(in srgb, var(--facility-ink) 40%, transparent); opacity: 0; }
+.agentarium .facility.state-running .art-scan::after { animation: agentarium-art-scan 3.8s linear infinite; animation-delay: var(--enter-delay); }
+.agentarium .facility:hover .art-scan::after { animation: agentarium-art-scan 1.5s linear infinite; }
+.agentarium .facility-bracket { position: absolute; width: 9px; height: 9px; border-color: var(--facility-ink); border-style: solid; opacity: 0; transition: opacity 200ms, width 250ms, height 250ms; pointer-events: none; }
+.agentarium .bracket-tl { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+.agentarium .bracket-br { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+.agentarium .facility:hover .facility-bracket, .agentarium .facility.selected .facility-bracket { opacity: 1; width: 15px; height: 15px; }
+.agentarium .facility-label { font-size: 11px; line-height: 1.3; gap: 3px; margin-top: 8px; letter-spacing: .08em; }
+.agentarium .facility-label > span { color: var(--facility-ink); font-size: clamp(6px, 1.05cqw, 8px); line-height: 1.4; opacity: .7; letter-spacing: .07em; }
+.agentarium .facility-state { display: inline-flex; align-items: center; gap: 4px; top: 0; right: 7px; border: 1px solid color-mix(in srgb, var(--facility-ink) 20%, transparent); background: var(--map); color: var(--facility-ink); border-radius: 3px; font-size: 7px; letter-spacing: .03em; animation: agentarium-state-in 320ms var(--ease) both; }
+.agentarium .facility-state i { height: 3px; width: 3px; background: currentColor; }
+.agentarium .facility.state-idle .facility-state { opacity: .5; }
+.agentarium .facility.state-running .facility-state i, .agentarium .facility.state-waiting .facility-state i { animation: agentarium-signal 2s ease-in-out infinite; }
+.agentarium .facility.state-failed .facility-state { border-color: var(--red); }
+.agentarium .facility-hq .ascii-art { animation: agentarium-core-float 5s ease-in-out infinite; }
+.agentarium .map-actor { display: flex; gap: 5px; align-items: center; padding: 4px 5px; border: 1px solid transparent; border-radius: 4px; background: color-mix(in srgb, var(--map) 88%, transparent); transition: left 950ms cubic-bezier(.22, 1, .36, 1), top 950ms cubic-bezier(.22, 1, .36, 1), background 180ms, border-color 180ms; }
+.agentarium .map-actor pre { font-size: 9px; line-height: 1.03; }
+.agentarium .map-actor > span { display: flex; align-items: center; gap: 4px; font-size: 8px; padding: 2px 4px; border-color: color-mix(in srgb, currentColor 25%, transparent); background: var(--map); border-radius: 2px; }
+.agentarium .map-actor > span i { width: 3px; height: 3px; background: currentColor; opacity: .6; }
+.agentarium .actor-moving > span i { animation: agentarium-signal 1.4s ease-in-out infinite; }
+.agentarium .actor-moving pre { animation: agentarium-robot 1.6s ease-in-out infinite; }
+.agentarium .map-actor:hover, .agentarium .map-actor.selected { outline: none; border-color: currentColor; background: var(--panel); }
+.agentarium .scene-readout { min-height: 36px; display: flex; align-items: center; gap: 12px; padding: 8px 14px; font: 9px/1.5 var(--mono); border-top: 1px solid var(--line); background: color-mix(in srgb, var(--accent) 4%, var(--map)); }
+.agentarium .readout-label { color: var(--accent); flex-shrink: 0; font-size: 8px; letter-spacing: .07em; }
+.agentarium .scene-readout button { display: flex; gap: 8px; align-items: center; min-width: 0; text-align: left; animation: agentarium-log-in 350ms var(--ease) both; }
+.agentarium .scene-readout button > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agentarium .scene-readout button:hover { color: var(--accent); }
+.agentarium .readout-seq { color: var(--subtle); flex-shrink: 0; }
+.agentarium .readout-cursor { color: var(--accent); animation: agentarium-cursor 1.2s steps(2, jump-none) infinite; }
+.agentarium .map-legend { min-height: 34px; font-size: 8px; gap: 12px; }
+.agentarium .map-legend small { font-size: 8px; }
+.agentarium .connection-overlay, .agentarium .empty-scene { max-width: 88%; width: 320px; padding: 20px; border-color: var(--amber-line); backdrop-filter: blur(12px); background: color-mix(in srgb, var(--panel) 92%, transparent); }
+.agentarium .empty-scene { border-color: var(--accent-line); }
+.agentarium .scene[data-disconnected='true'] .facility, .agentarium .scene[data-disconnected='true'] .map-actor { opacity: .5; }
+.agentarium .inspector-channel { margin-top: 17px; color: var(--subtle); font: 8px var(--mono); letter-spacing: .08em; }
+.agentarium .inspector-art { margin: 22px 0 0; padding: 18px 8px; color: var(--accent); font-size: 11px; line-height: 1.2; text-align: center; background: var(--map); border: 1px solid var(--line); border-radius: 5px; }
+.agentarium .inspector-art + .inspector-symbol { display: none; }
+.agentarium .inspector-art ~ h3 { margin-top: 18px; }
+.agentarium .inspector-symbol { font-size: 26px; margin: 24px 0 20px; }
+.agentarium .inspector-content { max-height: 530px; animation: agentarium-inspect-in 260ms var(--ease) both; }
+.agentarium .event-collapse { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 300ms var(--ease), visibility 300ms; }
+.agentarium .event-collapse[data-collapsed='true'] { grid-template-rows: 0fr; visibility: hidden; }
+.agentarium .event-collapse .event-list { min-height: 0; }
+.agentarium .event-collapse[data-collapsed='true'] .event-list { overflow: hidden; }
+.agentarium .event-row { animation: agentarium-log-in 300ms var(--ease) both; }
+.agentarium .event-row:hover .event-marker { translate: 2px 0; }
+.agentarium .event-marker { transition: translate 200ms; }
+.agentarium .event-controls svg { transition: transform 250ms var(--ease); }
+.agentarium .workflow { animation: agentarium-view-in 420ms var(--ease) both; }
+@keyframes agentarium-materialize { from { opacity: 0; filter: blur(3px); translate: 0 8px; } to { opacity: 1; filter: blur(0); translate: 0 0; } }
+@keyframes agentarium-sweep { 0% { transform: translateY(-80px); opacity: 0; } 12%, 70% { opacity: .3; } 85%, 100% { transform: translateY(var(--scene-height)); opacity: 0; } }
+@keyframes agentarium-art-scan { 0% { transform: translateY(0); opacity: 0; } 12%, 70% { opacity: 1; } 100% { transform: translateY(600%); opacity: 0; } }
+@keyframes agentarium-core-float { 50% { transform: translateY(-4px); } }
+@keyframes agentarium-robot { 0%, 100% { transform: translateY(0) rotate(0); } 35% { transform: translateY(-3px) rotate(-4deg); } 65% { transform: translateY(-3px) rotate(4deg); } }
+@keyframes agentarium-state-in { from { opacity: .3; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes agentarium-digit { from { opacity: .3; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes agentarium-log-in { from { opacity: 0; transform: translateX(-7px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes agentarium-inspect-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes agentarium-view-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes agentarium-cursor { to { opacity: 0; } }
+@media (min-width: 1600px) { .agentarium .scene { --scene-height: 680px; } .agentarium .facility pre { font-size: 10px; } }
+@media (max-width: 1200px) { .agentarium .workbench { grid-template-columns: 170px minmax(0, 1fr); } .agentarium .inspector { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 235px; } .agentarium .inspector > .panel-heading { grid-column: 1 / -1; } .agentarium .depot { margin: 0; border-top: 0; border-left: 1px solid var(--line); } .agentarium .inspector-content { max-height: 340px; } }
+@media (max-width: 680px) {
+  .agentarium .mission-eyebrow { font-size: 7px; letter-spacing: .08em; gap: 7px; }
+  .agentarium .mission-heading { padding-top: 24px; }
+  .agentarium .scene { --scene-height: 560px; }
+  .agentarium .scene-hud { left: 12px; right: 12px; font-size: 6px; gap: 5px; }
+  .agentarium .scene-hud > span { gap: 4px; }
+  .agentarium .facility-label { font-size: 10px; letter-spacing: .03em; }
+  .agentarium .facility-label > span { font-size: 6px; letter-spacing: 0; }
+  .agentarium .facility { padding-top: 14px; }
+  .agentarium .map-actor { padding: 3px; gap: 3px; }
+  .agentarium .map-actor pre { font-size: 8px; }
+  .agentarium .map-actor > span { font-size: 7px; padding: 1px 3px; }
+  .agentarium .bus-label { font-size: 5px; left: 2%; letter-spacing: 0; }
+  .agentarium .scene-tag { font-size: 6px; }
+  .agentarium .scene-readout { gap: 7px; padding: 8px 10px; font-size: 8px; }
+  .agentarium .readout-label { font-size: 7px; }
+  .agentarium .inspector { display: block; }
+  .agentarium .inspector-content { max-height: none; }
+  .agentarium .inspector-symbol { float: none; }
+  .agentarium .depot { border-left: 0; border-top: 1px solid var(--line); }
+}
+@container agentarium (max-width: 1100px) {
+  .agentarium .scene { height: var(--scene-height); min-height: var(--scene-height); }
+  .agentarium .facility pre { font-size: clamp(7px, 1.65cqw, 10px); }
+  .agentarium .facility { min-width: 0; }
+}
+@container agentarium (max-width: 680px) {
+  .agentarium .scene { --scene-height: 560px; }
+  .agentarium .scene-hud { font-size: 6px; left: 10px; right: 10px; }
+  .agentarium .facility-label > span { font-size: 6px; letter-spacing: 0; }
+  .agentarium .bus-label { font-size: 5px; left: 2%; }
+  .agentarium .map-actor pre { font-size: 8px; }
+}
+/* One gate for CSS and JS motion: static, replay, disconnect and hidden views. */
+.agentarium .workflow[data-motion='off'],
+.agentarium [data-motion='off'] *,
+.agentarium [data-motion='off'] *::before,
+.agentarium [data-motion='off'] *::after { animation: none !important; transition: none !important; }
+.agentarium [data-motion='off'] .scene-sweep,
+.agentarium [data-motion='off'] .art-scan { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .agentarium *, .agentarium *::before, .agentarium *::after { animation: none !important; transition: none !important; }
+  .agentarium .scene-sweep, .agentarium .art-scan { display: none; }
+}
+
+.agentarium .facility-hq pre { font-size: clamp(7px, 1.35cqw, 8.5px); }
+
+.agentarium .signal-flow { opacity: .75; text-shadow: 0 0 7px var(--accent-line); }
+.agentarium .inspector-art { text-align: left; width: max-content; max-width: 100%; margin-left: auto; margin-right: auto; }
+.agentarium .inspector-reticle { margin: 26px 0; color: var(--accent); font: 11px/1.5 var(--mono); opacity: .65; }
+.agentarium .inspector-reticle + .inspector-symbol { display: none; }
