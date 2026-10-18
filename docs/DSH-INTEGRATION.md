@@ -10,7 +10,7 @@
 
 ## 构建与交付
 
-在源码仓库运行 `npm ci && npm run build`。插件目录为 `dist/plugin`，可在该目录运行 `npm pack` 生成供宿主导入的 tgz。实际挂载通过目标 dsh 版本的 Profile/Bundles/插件管理完成；使用前需要核对其本地包导入约定。
+在源码仓库运行 `pnpm install --frozen-lockfile && pnpm build`。插件目录为 `dist/plugin`，可在该目录运行 `npm pack` 生成供宿主导入的 tgz。实际挂载通过目标 dsh 版本的 Profile/Bundles/插件管理完成；使用前需要核对其本地包导入约定。
 
 产物包括：
 

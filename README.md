@@ -6,20 +6,24 @@
 
 ## 本地运行
 
-需要 Node.js ≥ 22.12。
+需要 Node.js ≥ 22.12 和 pnpm 12.14.0（`npm install -g pnpm@12.14.0`）。
+
+统一使用 pnpm 和 `pnpm-lock.yaml`，避免混用包管理器。
 
 ```sh
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。初始停留在含失败和审批等待的演示现场，可继续演示、逐事件推进、从头播放或进入历史回放。
 
 ```sh
-npm run typecheck
-npm run build
-npm run preview
+pnpm typecheck
+pnpm build
+pnpm preview
 ```
+
+仅修改插件时可运行 `pnpm build:plugin`，跳过网页打包，仍执行类型检查。
 
 构建输出：`dist/demo` 为静态网页，`dist/plugin` 为 dsh 插件包目录。运行时不请求第三方图片、字体或 ASCII CDN。锁定依赖版本，许可文本随两份产物交付。
 

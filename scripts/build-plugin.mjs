@@ -1,6 +1,10 @@
 import { build } from 'esbuild'
 import { mkdir, readFile, writeFile, copyFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { createRequire } from 'node:module'
+
+const require = createRequire(import.meta.url)
+const reactDomRequire = createRequire(require.resolve('react-dom/package.json'))
 
 const out = 'dist/plugin'
 await mkdir(`${out}/lib`, { recursive: true })
@@ -26,8 +30,11 @@ await writeFile(`${out}/package.json`, `${JSON.stringify(manifest, null, 2)}\n`)
 const packages = ['ascii.rest', 'lucide-react', 'react', 'react-dom', 'scheduler']
 let notices = '# Third-party notices\n\nRuntime dependency license texts. React/ReactDOM are supplied by the dsh host in the plugin bundle.\n'
 for (const name of packages) {
-  const pkg = JSON.parse(await readFile(`node_modules/${name}/package.json`, 'utf8'))
-  const license = await readFile(`node_modules/${name}/LICENSE`, 'utf8')
+  const packagePath = name === 'scheduler'
+    ? reactDomRequire.resolve('scheduler/package.json')
+    : resolve('node_modules', name, 'package.json')
+  const pkg = JSON.parse(await readFile(packagePath, 'utf8'))
+  const license = await readFile(resolve(dirname(packagePath), 'LICENSE'), 'utf8')
   notices += `\n## ${name} ${pkg.version}\n\n${license}\n`
 }
 await writeFile(`${out}/THIRD_PARTY_NOTICES.md`, notices)
