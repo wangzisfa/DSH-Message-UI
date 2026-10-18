@@ -2,7 +2,7 @@
   /* 表面：优先跟随宿主 --dsw-* 令牌，回退为 dsh 官方深色令牌等值 */
   --bg: var(--dsw-alias-bg-base, rgb(21 21 23));
   --panel: var(--dsw-specific-sidebar-fill, rgb(27 27 28));
-  --map: rgb(15 17 21);
+  --map: var(--dsw-alias-bg-document-preview, rgb(15 17 21));
   --raised: var(--dsw-alias-interactive-bg-hover-solid, rgb(53 54 56));
   /* 发丝边框 */
   --line: var(--dsw-alias-border-l1, rgb(255 255 255 / .06));
@@ -42,10 +42,13 @@
   scrollbar-color: var(--line-strong) var(--bg);
   font-variant-numeric: tabular-nums;
 }
+/* DSH toggles body[data-ds-dark-theme]; an absent attribute means light.
+   The standalone demo keeps its explicit, local data-theme override. */
+body:not([data-ds-dark-theme]) .agentarium.plugin-view:not([data-theme]),
 .agentarium[data-theme='light'] {
   --bg: var(--dsw-alias-bg-base, rgb(255 255 255));
   --panel: var(--dsw-specific-sidebar-fill, rgb(249 250 251));
-  --map: rgb(241 243 245);
+  --map: var(--dsw-alias-bg-document-preview, rgb(241 243 245));
   --raised: var(--dsw-alias-interactive-bg-hover-solid, rgb(241 243 245));
   --line: var(--dsw-alias-border-l1, rgb(0 0 0 / .06));
   --line-strong: var(--dsw-alias-border-l2, rgb(0 0 0 / .1));

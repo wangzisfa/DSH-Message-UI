@@ -1,6 +1,6 @@
 # Agentarium：DeepSeek Harness 插件
 
-插件包版本 `0.2.0`。按[官方插件安装文档](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)提供 `dsh.bundle`、配置 patch、Host 入口与浏览器入口。
+插件包版本 `0.2.1`。按[官方插件安装文档](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)提供 `dsh.bundle`、配置 patch、Host 入口与浏览器入口。
 
 ## 兼容与安装
 
@@ -13,13 +13,13 @@ pnpm install --frozen-lockfile
 pnpm build
 node scripts/verify-plugin.mjs
 cd dist/plugin
-pnpm pack --out ../dsh-agentarium-0.2.0.tgz
+pnpm pack --out ../dsh-agentarium-0.2.1.tgz
 ```
 
 在已经提供 `dsh` 命令的兼容安装中，为 Web profile 安装：
 
 ```sh
-dsh plugin --profile web add /absolute/path/to/dsh-agentarium-0.2.0.tgz
+dsh plugin --profile web add /absolute/path/to/dsh-agentarium-0.2.1.tgz
 dsh --profile web --dump-config
 dsh --profile web --no-open
 ```

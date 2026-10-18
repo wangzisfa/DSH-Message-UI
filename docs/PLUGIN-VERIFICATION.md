@@ -38,3 +38,19 @@
 - 尚不能把本次结果表述为第 18 章所有 MVP 验收项全部通过。
 
 此前纯 demo 的验证记录保留在 `docs/VERIFICATION.md`，不作为本次插件接入的替代证据。
+
+## 0.2.1：宿主浅色主题修复（2026-10-18）
+
+问题来自浅色样式仅匹配 demo 的局部 `data-theme="light"`，而 DSH 使用 `body[data-ds-dark-theme]` 选择深色、移除该属性选择浅色。插件的文字读取了宿主浅色变量，但地图保留写死的深色背景，导致深色文字叠在深色地图上。
+
+- 修复：插件跟随宿主的主题属性，地图背景读取宿主 `--dsw-alias-bg-document-preview`；demo 保留自己的显式主题切换。无需订阅或修改宿主主题状态。
+- 最小复现：使用官方 `design-platform.css`、插件实际的 `.agentarium.plugin-view` 容器和样式，在浅色宿主下读取地图 computed style。修复前背景与文字均为 `rgb(15, 17, 21)`，`color-scheme` 为 `dark`，断言失败。
+- 回归：同一检查修复后通过。浅色地图为 `rgb(235, 238, 242)`、文字为 `rgb(15, 17, 21)`；深色地图为 `rgb(21, 21, 23)`、文字为 `rgb(249, 250, 251)`。浅色 → 深色 → 浅色无需重新挂载即可同步，`color-scheme` 同步切换。
+- 完整界面：加载构建后的 `lib/client.js`，通过插件自身的 style effect 安装样式，再渲染共享 WorkflowView 与明确标注的合成数据。地图、头像、检查器和失败详情均正常，浏览器未记录警告或错误。截图：本地 `artifacts/theme-check/light-fixed.jpg`。
+- demo：生产预览页的深色与浅色按钮切换通过，独立主题未被宿主选择器覆盖。
+- 构建：`pnpm build`（含类型检查）与 `pnpm verify:plugin` 通过。
+- 安装：官方 dsh `0.2.1-rc.2` 在独立 `DSH_HOME` 的 Web profile 安装 `dsh-agentarium@0.2.1` 成功，组合配置含插件激活层。
+
+浏览器主题验证使用官方颜色变量和主题 DOM 契约的隔离夹具，不代表已在用户当前 Desktop 会话中升级验证。本次尝试启动的独立 Web 宿主返回 HTTP 401，未作为视觉验证证据；用户实际 profile 未修改。临时验证文件留在忽略提交的 `artifacts/theme-check/`。
+
+需求理解与交付前均读取 ask-jev 技能，但当前没有 `ask_jev` 工具，**Jev 检查未完成**。
