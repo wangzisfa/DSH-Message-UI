@@ -1,12 +1,14 @@
 {
   "name": "dsh-agentarium",
-  "version": "0.2.1",
-  "builtAt": "2026-10-18T16:03:03+08:00",
+  "version": "0.3.0",
+  "builtOn": "2026-10-19",
+  "timeZone": "Asia/Shanghai",
   "source": {
     "repository": "https://github.com/wangzisfa/DSH-Message-UI",
-    "commit": "dcfa0037f8eaacff88762ee51b17bf0ccac4bb60",
+    "commit": "fb4002f5a255e9bca8b8d835905d01335827bd2b",
+    "featureCommit": "2feaa65",
     "uncommittedChangesIncluded": false,
-    "snapshotMethod": "working tree build inputs verified against source commit"
+    "snapshotMethod": "all build inputs committed before packaging; release metadata and archives added afterward"
   },
   "toolchain": {
     "node": "v26.6.0",
@@ -14,14 +16,13 @@
   },
   "checks": {
     "typecheckAndBuild": "passed",
-    "verifyPlugin": "passed (1500 actions: 1.49 ms)",
-    "archiveContentMatchesBuild": "passed",
-    "installedContentMatchesArchive": "passed",
-    "isolatedDshInstall": "passed (macOS dsh 0.2.1-rc.2, Web profile)",
-    "hostThemeRegression": "passed: red before fix; light/dark/light after fix using official tokens and host DOM contract",
-    "bundledStyleBrowserSmoke": "passed: bundled plugin CSS, full WorkflowView, synthetic events, failure inspector",
-    "standaloneDemoThemeSwitch": "passed: dark/light",
-    "browserWarningsAndErrors": 0
+    "verifyPlugin": "passed: evidence, subscriptions, world presets/save drafts, continuous narrative, replay/session isolation, bounded history; 1500 calls and narrative 2.05 ms in one local run",
+    "archiveContentMatchesBuild": "passed: exact plugin payload bytes; package.json semantically identical (pnpm removes trailing newline); demo bytes identical",
+    "manifestVersion": "passed: source, plugin, and release all 0.3.0",
+    "isolatedDshInstall": "passed: macOS official dsh 0.2.1-rc.2, fresh isolated Web profile",
+    "installedContentMatchesArchive": "passed: every plugin archive file matches installed bytes",
+    "activationConfig": "passed: composed config includes dsh-agentarium",
+    "worldFeatureBrowserVerification": "feature implementation verified before release preparation; see docs/WORLD-CUSTOMIZATION-VERIFICATION.md"
   },
   "jev": {
     "requirements": "not_completed",
@@ -30,23 +31,20 @@
   },
   "notVerified": [
     "Upgrade in the user active Desktop session",
-    "Live model task",
+    "Live model generation and file-write end-to-end chain",
     "Windows",
     "Long-duration performance"
   ],
-  "validationLimitations": [
-    "The isolated full Web host returned HTTP 401. Visual verification used the official host theme tokens and DOM contract in a separate fixture, loading the built plugin style effect."
-  ],
   "artifacts": [
     {
-      "file": "dsh-agentarium-0.2.1.tgz",
-      "bytes": 58105,
-      "sha256": "63300aa63deb0044bef16783d92eef0414f48650a302c166c32f1fe6d33eecaf"
+      "file": "dsh-agentarium-0.3.0.tgz",
+      "bytes": 62939,
+      "sha256": "6b61bf6734bbd5f0ed9bfe2c2094fbff74814691db6a956e3463700a3530c254"
     },
     {
-      "file": "agentarium-demo-0.2.1.zip",
-      "bytes": 95010,
-      "sha256": "b12c69298f555dae6cf9208614cff128b9f549c6f9345488a1d4d81ec06dc1fa"
+      "file": "agentarium-demo-0.3.0.zip",
+      "bytes": 99619,
+      "sha256": "f8f212cd0abd7511d714d669a1d8c5523f731400de1f811474d11a64537ff784"
     }
   ]
 }
