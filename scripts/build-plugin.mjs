@@ -6,10 +6,11 @@ import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const reactDomRequire = createRequire(require.resolve('react-dom/package.json'))
 
+const { version } = JSON.parse(await readFile('package.json', 'utf8'))
 const out = 'dist/plugin'
 await mkdir(`${out}/lib`, { recursive: true })
 const manifest = {
-  name: 'dsh-agentarium', version: '0.2.1', type: 'module',
+  name: 'dsh-agentarium', version, type: 'module',
   description: 'Project-themed ASCII trace visualization for DeepSeek Harness.',
   engines: { node: '>=22.12.0', dsh: '>=0.2.1-rc.2 <0.3.0' },
   main: './lib/index.js', exports: { '.': './lib/index.js', './client': './lib/client.js', './package.json': './package.json' },

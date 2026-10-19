@@ -53,22 +53,22 @@ pnpm preview
 
 ### 发布方式
 
-源码推送到本 GitHub 仓库，构建后的插件安装包放在 [`release/`](release/) 目录。当前发布版本为 **dsh-agentarium 0.2.1**，安装包已包含运行所需的编译产物，用户无需在本地构建，也无需登录 npm。
+源码推送到本 GitHub 仓库，构建后的插件安装包放在 [`release/`](release/) 目录。当前发布版本为 **dsh-agentarium 0.3.0**，安装包已包含运行所需的编译产物，用户无需在本地构建，也无需登录 npm。
 
-发布时建议使用语义化 Tag 或锁定 commit，避免分支更新后安装到不同内容。下面的命令固定到版本 Tag `v0.2.1`；构建来源与校验值见 [发布说明](release/README.md)。
+发布时建议使用语义化 Tag 或锁定 commit，避免分支更新后安装到不同内容。下面的命令固定到版本 Tag `v0.3.0`；构建来源与校验值见 [发布说明](release/README.md)。
 
 ### 一键安装（推荐）
 
 需要 Node.js ≥ 22.12.0，以及兼容的 dsh `>=0.2.1-rc.2 <0.3.0`（已验证 `0.2.1-rc.2`）。桌面端用户请先启动过 DeepSeek Harness Desktop，让它初始化 `desktop` profile，随后**完全退出客户端**，再在终端执行：
 
 ```bash
-dsh plugin --profile desktop add https://raw.githubusercontent.com/wangzisfa/DSH-Message-UI/v0.2.1/release/dsh-agentarium-0.2.1.tgz
+dsh plugin --profile desktop add https://raw.githubusercontent.com/wangzisfa/DSH-Message-UI/v0.3.0/release/dsh-agentarium-0.3.0.tgz
 ```
 
 macOS 若提示 `dsh: command not found`，且应用安装在默认位置，可直接使用客户端附带的 CLI：
 
 ```bash
-"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add https://raw.githubusercontent.com/wangzisfa/DSH-Message-UI/v0.2.1/release/dsh-agentarium-0.2.1.tgz
+"/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh" plugin --profile desktop add https://raw.githubusercontent.com/wangzisfa/DSH-Message-UI/v0.3.0/release/dsh-agentarium-0.3.0.tgz
 ```
 
 安装后重新打开客户端，进入会话并选择「工作流」标签页。Web 用户将命令中的 `--profile desktop` 改为 `--profile web`，安装后重启对应的 dsh 服务。本安装链接已在隔离的 Web profile 中验证安装成功，并确认插件已加入激活配置。

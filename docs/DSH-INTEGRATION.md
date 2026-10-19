@@ -1,6 +1,6 @@
 # Agentarium：DeepSeek Harness 插件
 
-插件包版本 `0.2.1`。按[官方插件安装文档](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)提供 `dsh.bundle`、配置 patch、Host 入口与浏览器入口。
+插件包版本 `0.3.0`。按[官方插件安装文档](https://deepseek-harness.github.io/deepseek-harness/develop/basic/publish)提供 `dsh.bundle`、配置 patch、Host 入口与浏览器入口。
 
 ## 兼容与安装
 
@@ -13,13 +13,13 @@ pnpm install --frozen-lockfile
 pnpm build
 node scripts/verify-plugin.mjs
 cd dist/plugin
-pnpm pack --out ../dsh-agentarium-0.2.1.tgz
+pnpm pack --out ../dsh-agentarium-0.3.0.tgz
 ```
 
 在已经提供 `dsh` 命令的兼容安装中，为 Web profile 安装：
 
 ```sh
-dsh plugin --profile web add /absolute/path/to/dsh-agentarium-0.2.1.tgz
+dsh plugin --profile web add /absolute/path/to/dsh-agentarium-0.3.0.tgz
 dsh --profile web --dump-config
 dsh --profile web --no-open
 ```
@@ -56,6 +56,10 @@ dsh plugin --profile web remove dsh-agentarium
 在当前项目根目录保存 `.agentarium/world.json`。通过官方会话授权的 `remote.workspaceFiles.read` 读取，文件内容仅作为有长度限制的普通文本和装饰颜色。
 
 在「项目世界设定 → 让模型修改设定」输入风格要求，可将完整要求加入原生对话草稿，再交给模型通过现有文件工具修改。没有独立写入或审批通道。首次打开、重连、可能写文件的工具结算后自动读取；也可手动刷新。无效内容保留当前视图中的有效设定；切换会话重新读取各自项目文件，迟到响应被取消。
+
+在“项目世界设定 → 自定义世界观”直接编辑背景、队伍、称谓、设施和主题色，可载入预设、导入导出 JSON，并预览。点击“加入项目保存草稿”将校验后的完整配置交给当前对话保存；预览会明确标示尚未保存到项目。
+
+执行时“世界动态”随可见事件持续生成，沿用当前世界名称；支持暂停/恢复叙事、点击来源和按历史游标重建。采用本地事件映射，不持续调用 AI 或自动改写项目文件。
 
 格式、边界及示例见仓库 `docs/WORLD-SETTING.md` 和 `examples/deep-sea-world.json`。世界称谓不改变工具名称、调用身份、错误、队员关系或真实执行状态。
 

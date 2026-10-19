@@ -1,6 +1,6 @@
 {
   "name": "dsh-agentarium",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "description": "An evidence-driven ASCII mission control for DeepSeek Harness",
   "type": "module",
