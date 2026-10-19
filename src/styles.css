@@ -310,7 +310,7 @@ body:not([data-ds-dark-theme]) .agentarium.plugin-view:not([data-theme]),
   .agentarium .depot { border-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .agentarium .actor-moving pre { animation: none; } }
-.agentarium.plugin-view .plugin-toolbar, .agentarium.plugin-view .world-setting-panel summary { color: var(--world-accent, var(--accent)); }
+.agentarium.plugin-view .plugin-toolbar, .agentarium.plugin-view .world-setting-panel summary { color: color-mix(in srgb, var(--world-accent, var(--accent)) 35%, var(--text)); }
 .agentarium.plugin-view .tiny-square { background: var(--world-accent, var(--accent)); }
 .agentarium .world-request { width: 100%; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--map); }
 
@@ -482,3 +482,59 @@ body:not([data-ds-dark-theme]) .agentarium.plugin-view:not([data-theme]),
 .agentarium .inspector-art { text-align: left; width: max-content; max-width: 100%; margin-left: auto; margin-right: auto; }
 .agentarium .inspector-reticle { margin: 26px 0; color: var(--accent); font: 11px/1.5 var(--mono); opacity: .65; }
 .agentarium .inspector-reticle + .inspector-symbol { display: none; }
+
+/* World settings stay local to the view; semantic error/approval colors stay intact. */
+.agentarium .world-setting-panel { container: world-settings / inline-size; }
+.agentarium .world-setting-panel > summary, .agentarium .map-toolbar > span, .agentarium .world-narrative-heading .mono { color: color-mix(in srgb, var(--world-accent, var(--accent)) 35%, var(--text)); }
+.agentarium .world-editor { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.agentarium .world-editor summary { cursor: pointer; }
+.agentarium .world-presets { margin: 12px 0 18px; }
+.agentarium .world-presets > span { color: var(--subtle); }
+.agentarium .world-field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
+.agentarium .world-editor label { display: block; min-width: 0; color: var(--muted); font-size: 12px; }
+.agentarium .world-editor input { display: block; width: 100%; min-width: 0; margin-top: 5px; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: var(--r-sm); background: var(--map); color: var(--text); }
+.agentarium .world-editor input::placeholder { color: var(--subtle); }
+.agentarium .world-editor .world-story-field { margin-top: 14px; }
+.agentarium .world-story-field small { float: right; color: var(--subtle); }
+.agentarium .world-editor .world-color-field { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
+.agentarium .world-color-field input { width: 120px; margin: 0; font-family: var(--mono); }
+.agentarium .world-color-field input[type='color'] { padding: 3px; width: 42px; height: 34px; }
+.agentarium .world-editor fieldset { padding: 14px; margin: 14px 0; min-width: 0; border: 1px solid var(--line); border-radius: var(--r-md); }
+.agentarium .world-editor legend { padding: 0 6px; color: var(--muted); }
+.agentarium .world-editor legend span { color: var(--subtle); font-size: 10px; margin-left: 6px; }
+.agentarium .world-editor .setting-actions { gap: 8px; }
+.agentarium .world-editor button[type='submit'] { color: var(--text); background: var(--active); }
+.agentarium .world-json { margin-top: 16px; }
+.agentarium .world-json .setting-actions { margin-top: 10px; }
+.agentarium .world-setting-panel .world-error { color: var(--red); }
+.agentarium .world-narrative { container: world-dynamics / inline-size; margin: 16px 0; padding: 16px 18px; border: 1px solid var(--line); border-left: 2px solid var(--world-accent, var(--accent)); border-radius: var(--r-lg); background: var(--panel); }
+.agentarium .world-narrative-heading, .agentarium .world-narrative-heading > div { display: flex; align-items: center; gap: 12px; }
+.agentarium .world-narrative-heading { justify-content: space-between; flex-wrap: wrap; }
+.agentarium .world-narrative-heading > div { flex-wrap: wrap; gap: 8px; }
+.agentarium .world-narrative-heading .mono { font-size: 10px; }
+.agentarium .world-narrative-mode { color: var(--subtle); font-size: 11px; }
+.agentarium .world-narrative-heading > button { color: var(--muted); font-size: 11px; padding: 4px 8px; border: 1px solid var(--line-strong); border-radius: var(--r-sm); }
+.agentarium .world-narrative-note { color: var(--subtle); font-size: 11px; margin-top: 8px; }
+.agentarium .world-narrative ol { list-style: none; padding: 0; margin: 12px 0; }
+.agentarium .world-narrative li + li { border-top: 1px solid var(--line); }
+.agentarium .world-narrative li button { display: grid; grid-template-columns: 65px minmax(0, 1fr) 50px; align-items: baseline; gap: 12px; width: 100%; padding: 9px 5px; text-align: left; border-radius: var(--r-sm); }
+.agentarium .world-narrative li button:hover { background: var(--hover); }
+.agentarium .world-narrative li span { overflow-wrap: anywhere; font-size: 12px; }
+.agentarium .world-narrative li time, .agentarium .world-narrative li small { color: var(--subtle); font: 10px var(--mono); }
+.agentarium .world-narrative li small { text-align: right; }
+.agentarium .world-narrative li .state-failed { color: var(--red); }
+.agentarium .world-narrative li .state-waiting, .agentarium .world-narrative li .state-blocked { color: var(--amber); }
+.agentarium .world-narrative-empty { padding: 18px 0; color: var(--muted); font-size: 12px; }
+.agentarium .world-narrative-footer { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; color: var(--subtle); font-size: 10px; }
+.agentarium .world-narrative-footer button { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.agentarium .world-narrative-footer > span:last-child { margin-left: auto; }
+.agentarium .facility.selected { border-color: var(--world-accent, var(--accent)); }
+@container world-settings (max-width: 540px) {
+  .agentarium .world-field-grid { grid-template-columns: minmax(0, 1fr); }
+  .agentarium .world-setting-panel summary span { display: block; margin-left: 0; }
+}
+@container world-dynamics (max-width: 540px) {
+  .agentarium .world-narrative li button { grid-template-columns: 58px minmax(0, 1fr); gap: 8px; }
+  .agentarium .world-narrative li small { grid-column: 2; text-align: left; }
+  .agentarium .world-narrative-footer > span:last-child { margin-left: 0; }
+}

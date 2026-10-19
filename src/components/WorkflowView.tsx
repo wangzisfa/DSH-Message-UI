@@ -5,6 +5,7 @@ import { actionKey, statusCode, statusText, timeLabel, type Actor, type Status, 
 import { Scene, SceneBoundary } from './Scene'
 import { Inspector } from './Inspector'
 import { useWorldSetting } from './WorldSetting'
+import { WorldNarrative } from './WorldNarrative'
 
 export interface WorkflowProps {
   sessionId: string
@@ -27,7 +28,7 @@ export function WorkflowView({ sessionId, events, demo = false, disconnected = f
     const projected = projectWorld(sessionId, events, knownActors)
     for (const actor of projected.actors) {
       if (actor.id === 'root') actor.name = setting.leaderTitle
-      else if (!demo) actor.name = `${setting.specialistTitle} · ${actor.name}`
+      else actor.name = `${setting.specialistTitle} · ${actor.name}`
       const state = liveStatuses?.get(actor.id)
       if (state) actor.status = state
     }
@@ -35,7 +36,7 @@ export function WorkflowView({ sessionId, events, demo = false, disconnected = f
     const rootState = liveStatuses?.get('root')
     if (rootState) projected.status = rootState
     return projected
-  }, [sessionId, events, knownActors, liveStatuses, waitingCalls, setting, demo])
+  }, [sessionId, events, knownActors, liveStatuses, waitingCalls, setting])
   const [selection, setSelection] = useState<Selection>(null)
   const [filter, setFilter] = useState<'all' | 'attention'>('all')
   const [staticMode, setStaticMode] = useState(false)
@@ -79,6 +80,7 @@ export function WorkflowView({ sessionId, events, demo = false, disconnected = f
     <div className="mission-heading"><div><div className="mission-eyebrow"><span>[ A ]</span> MULTI-AGENT OBSERVATORY <i>/</i> 001</div><h1>让每一步协作，都看得见<span className="title-dot">.</span></h1><p>{setting.story}</p></div><div className={`mission-status state-${activeStatus}`}><span className="status-dot" />{disconnected ? '连接中断 · 状态未知' : world.status === 'succeeded' ? '轮次已结束' : statusText[world.status]}<small>{replay ? '历史观察' : demo ? '演示快照' : '当前会话'}</small></div></div>
     <div className="status-strip" aria-label="任务概览"><span className="strip-live"><Radio size={14} />{replay ? 'REPLAY' : demo ? 'DEMO' : 'SESSION'}</span><span>可见队员 <b key={world.actors.length}>{world.actors.length.toString().padStart(2, '0')}</b></span><span>{disconnected ? '未结算调用' : '执行中'} <b key={running.length}>{running.length.toString().padStart(2, '0')}</b></span><button className={failed.length ? 'state-failed' : ''} onClick={() => { setFilter('attention'); if (failed[0]) select({ type: 'action', id: failed[0].id }) }}>失败 <b key={failed.length}>{failed.length.toString().padStart(2, '0')}</b></button><button className={waiting.length ? 'state-waiting' : ''} onClick={() => { if (waiting[0]) select({ type: 'action', id: waiting[0].id }) }}>待审批 <b key={waiting.length}>{waiting.length.toString().padStart(2, '0')}</b></button><span className="strip-end"><VolumeX size={13} /> 只读观察</span></div>
     {hasMore && <div className="history-notice"><span>部分历史未加载 · 计数仅覆盖当前窗口</span>{onLoadOlder && <button onClick={loadOlder} disabled={loading}><ArrowDownToLine size={13} />{loading ? '正在加载…' : '加载更早记录'}</button>}{loadError && <span role="alert">{loadError}</span>}</div>}
+    <WorldNarrative world={world} replay={replay} disconnected={disconnected} onSelect={select} />
     <div className="workbench">
       <aside className="roster" aria-label="队员列表"><div className="panel-heading"><span>{setting.squadName}</span><span className="mono">{world.actors.length.toString().padStart(2, '0')}</span></div><div className="roster-list">{world.actors.map((actor, i) => {
         const state = disconnected && ['running', 'waiting'].includes(actor.status) ? 'unknown' : actor.status

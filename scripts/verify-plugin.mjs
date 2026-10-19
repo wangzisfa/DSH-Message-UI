@@ -6,13 +6,14 @@ import { tmpdir } from 'node:os'
 import { pathToFileURL } from 'node:url'
 const temp = await mkdtemp(`${tmpdir()}/agentarium-verify-`)
 try {
-  for (const [name, entry] of Object.entries({ adapter: 'src/dsh/adapter.ts', model: 'src/model/projector.ts', setting: 'src/model/setting.ts', observation: 'src/dsh/observation.ts' })) {
+  for (const [name, entry] of Object.entries({ adapter: 'src/dsh/adapter.ts', model: 'src/model/projector.ts', setting: 'src/model/setting.ts', narrative: 'src/model/narrative.ts', observation: 'src/dsh/observation.ts' })) {
     await build({ entryPoints: [entry], outfile: `${temp}/${name}.mjs`, bundle: true, platform: 'node', format: 'esm' })
   }
   const load = name => import(pathToFileURL(`${temp}/${name}.mjs`).href)
   const { normalizeDshWindow } = await load('adapter')
   const { projectWorld } = await load('model')
-  const { parseWorldSetting } = await load('setting')
+  const { defaultSetting, parseWorldSetting, settingSavePrompt, worldPresets } = await load('setting')
+  const { generateWorldNarrative } = await load('narrative')
   const { DshObservation } = await load('observation')
   function source(snapshot) {
     const listeners = new Set()
@@ -85,6 +86,30 @@ try {
   for (const raw of ['{', '{"version":2}', '{"version":1,"name":true}', '{"version":1,"accent":"url(x)"}', '{"version":1,"facilities":[]}', JSON.stringify({ version: 1, story: '测'.repeat(6000) })]) assert.throws(() => parseWorldSetting(raw))
   const hostile = parseWorldSetting('{"version":1,"name":"<img src=x onerror=x>"}')
   assert.equal(hostile.name, '<img src=x onerror=x>', 'presentation remains plain text for React escaping')
+  for (const { setting } of worldPresets) {
+    const validated = parseWorldSetting(JSON.stringify(setting))
+    assert.deepEqual(validated, setting, 'presets round-trip through the project file schema')
+    assert(settingSavePrompt(validated).includes(JSON.stringify(validated, null, 2)), 'saving retains exact user configuration')
+  }
+  assert.throws(() => settingSavePrompt({ ...defaultSetting, accent: 'invalid' }), 'invalid drafts cannot enter project save prompts')
+  const ocean = worldPresets[1].setting
+  const evidenceBefore = JSON.stringify(world)
+  const narrative = generateWorldNarrative(world, ocean)
+  assert(narrative.chapters.some(chapter => chapter.text.includes('深海研究所')))
+  assert(narrative.chapters.some(chapter => chapter.text.includes('控制终端') && chapter.text.includes('失败')))
+  assert(narrative.chapters.some(chapter => chapter.text.includes('内部行程仍不可见')))
+  assert(!JSON.stringify(narrative.chapters.map(chapter => chapter.text)).includes('SECRET'), 'narrative never copies tool bodies')
+  assert.equal(JSON.stringify(world), evidenceBefore, 'world generation cannot mutate execution facts')
+  assert.deepEqual(generateWorldNarrative(world, ocean), narrative, 'identical evidence produces identical chapters')
+  const prefix = projectWorld('root-session', normalized.slice(0, 2))
+  const prefixNarrative = generateWorldNarrative(prefix, ocean)
+  assert.equal(prefixNarrative.count, 2)
+  assert(!prefixNarrative.chapters.some(chapter => chapter.text.includes('调用失败')), 'replay cannot reveal a future failure')
+  assert(narrative.count > prefixNarrative.count, 'new evidence continuously adds world chapters')
+  const repeated = projectWorld('root-session', normalized.concat(normalized).reverse())
+  assert.equal(generateWorldNarrative(repeated, ocean).count, normalized.length, 'reconnect duplicates do not create new chapters')
+  assert.equal(generateWorldNarrative(projectWorld('other', normalized), ocean).count, 0, 'narrative stays in its own session')
+  assert(generateWorldNarrative(projectWorld('missing', missing), defaultSetting).chapters[0].text.includes('已结算'), 'a missing start is not invented')
   const many = Array.from({ length: 1500 }, (_, i) => ({ id: `stress:${i}`, sessionId: 'stress', seq: i, time: i, actorId: 'root', kind: 'action.start', sourceType: 'tool/call', callId: `call-${i}`, tool: 'read', summary: 'read' }))
   const crew = Array.from({ length: 7 }, (_, i) => ({ id: `agent-${i}`, label: `A${i + 1}`, name: `agent-${i}`, role: 'child', visibility: 'local', status: 'unknown', facility: 'portal' }))
   const parallel = Array.from({ length: 16 }, (_, i) => ({ ...many[i], id: `parallel:${i}`, sessionId: 'parallel', actorId: i % 8 === 0 ? 'root' : `agent-${(i % 8) - 1}` }))
@@ -93,10 +118,11 @@ try {
   assert.equal(parallelWorld.actions.filter(a => a.status === 'running').length, 16)
   const before = performance.now()
   assert.equal(projectWorld('stress', many).actions.length, 1500)
+  assert.equal(generateWorldNarrative(projectWorld('stress', many), ocean).chapters.length, 40, 'continuous history retains a bounded presentation window')
   const elapsed = performance.now() - before
   const manifest = JSON.parse(await readFile('dist/plugin/package.json', 'utf8'))
   assert.equal(manifest.dsh.bundle.patch, './cordis.patch.yml')
   assert((await readFile('dist/plugin/cordis.patch.yml', 'utf8')).includes('name: dsh-agentarium'))
   assert((await readFile('dist/plugin/lib/client.js', 'utf8')).includes('window.__ModuleLoader__.load'))
-  console.log(`PASS: event identity, privacy, tool/PTC settlement, forks, subagent ownership, approval isolation, reconnect, cleanup/remount, 8 actors/16 concurrent calls, world validation, package contract. 1500 actions: ${elapsed.toFixed(2)} ms.`)
+  console.log(`PASS: event identity, privacy, tool/PTC settlement, forks, subagent ownership, approval isolation, reconnect, cleanup/remount, 8 actors/16 concurrent calls, world validation/presets/save drafts, continuous narrative/replay/session isolation/bounded history, package contract. 1500 actions and narrative: ${elapsed.toFixed(2)} ms.`)
 } finally { await rm(temp, { recursive: true, force: true }) }

@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState, useSyncExternalStore, type CSSProperties } from 'react'
 import { WorkflowView } from '../components/WorkflowView'
 import { WorldSettingContext } from '../components/WorldSetting'
+import { WorldSettingEditor } from '../components/WorldSettingEditor'
 import { actionKey, type Actor, type EvidenceEvent } from '../model/types'
-import { defaultSetting, parseWorldSetting, SETTING_PATH, settingPrompt } from '../model/setting'
+import { defaultSetting, parseWorldSetting, SETTING_PATH, settingPrompt, settingSavePrompt, type WorldSetting } from '../model/setting'
 import type { DshContext, Observable, PluginViewProps } from './contracts'
 import { DshObservation } from './observation'
 import css from '../styles.css?inline'
@@ -26,7 +27,9 @@ function BoundSessionView({ binding, context, inspectCall, openView, inputAction
   const lifecycle = useSource(binding.session)
   const generation = useSource(context.connection.generation)
   const [boundary, setBoundary] = useState<{ id: string; time: number } | null>(null)
-  const [setting, setSetting] = useState(defaultSetting)
+  const [projectSetting, setSetting] = useState(defaultSetting)
+  const [previewSetting, setPreviewSetting] = useState<WorldSetting | null>(null)
+  const setting = previewSetting ?? projectSetting
   const [settingNotice, setSettingNotice] = useState('')
   const [refresh, setRefresh] = useState(0)
   const [promptOpen, setPromptOpen] = useState(false)
@@ -46,7 +49,10 @@ function BoundSessionView({ binding, context, inspectCall, openView, inputAction
         }
         try {
           if (!result.value.eof) throw new Error('设定超过 100 行')
-          setSetting(parseWorldSetting(result.value.text)); setSettingNotice('项目世界 · 已同步')
+          const next = parseWorldSetting(result.value.text)
+          setSetting(next)
+          setPreviewSetting(current => current && JSON.stringify(current) === JSON.stringify(next) ? null : current)
+          setSettingNotice('项目世界 · 已同步')
         } catch (error) { setSettingNotice(`设定无效 · 保留有效设定 · ${error instanceof Error ? error.message : '请检查 JSON'}`) }
       }).catch(() => { if (!controller.signal.aborted) setSettingNotice('设定读取失败 · 保留有效设定') })
     }, 350)
@@ -67,7 +73,38 @@ function BoundSessionView({ binding, context, inspectCall, openView, inputAction
   }
   return <WorldSettingContext.Provider value={setting}><div className="agentarium plugin-view" style={{ '--world-accent': setting.accent } as CSSProperties}>
     <div className="plugin-toolbar"><span className="mono">AGENTARIUM / {setting.name}</span><div className="segmented"><button aria-pressed={!boundary} onClick={() => setBoundary(null)}>实时现场</button><button disabled={!snapshot.events.length} aria-pressed={!!boundary} onClick={() => { const e = snapshot.events.at(-1); if (e) setBoundary({ id: e.id, time: e.time }) }}>历史回放</button></div></div>
-    <details className="world-setting-panel"><summary>项目世界设定 <span>{settingNotice}</span></summary><p>背景设定 · {setting.story}</p><div className="setting-actions"><button onClick={() => setPromptOpen(v => !v)}>让模型修改设定</button><button onClick={() => setRefresh(n => n + 1)}>刷新设定</button><code>{SETTING_PATH}</code></div>{promptOpen && <><p>说明希望的风格，交给当前项目中的模型修改。</p><input className="world-request" aria-label="世界设定修改要求" value={worldRequest} maxLength={500} onChange={e => setWorldRequest(e.target.value)} />{inputActions && <button className="trace-link" onClick={() => { const span = inputActions.captureInsertion(); if (inputActions.insertText(`${worldRequest}\n${settingPrompt}`, span)) { setDraftNotice('已加入对话草稿，发送后由模型修改。'); openView?.('chat', '') } else setDraftNotice('输入框正在处理请求，请稍后重试。') }}>将要求加入对话草稿</button>}<p role="status">{draftNotice || '也可以复制完整提示词到对话中。'}</p><textarea aria-label="世界设定修改提示词" readOnly value={settingPrompt} onFocus={e => e.currentTarget.select()} /></>}</details>
+    <details className="world-setting-panel">
+      <summary>项目世界设定 <span>{previewSetting ? '预览中 · 尚未保存到项目' : settingNotice}</span></summary>
+      {previewSetting && <p role="status">项目文件状态 · {settingNotice || '正在读取'}</p>}
+      <p>背景设定 · {setting.story}</p>
+      <div className="setting-actions">
+        <button onClick={() => setPromptOpen(v => !v)}>让模型修改设定</button>
+        <button onClick={() => setRefresh(n => n + 1)}>刷新设定</button>
+        {previewSetting && <button onClick={() => setPreviewSetting(null)}>使用项目设定</button>}
+        <code>{SETTING_PATH}</code>
+      </div>
+      <WorldSettingEditor setting={setting} applyLabel="预览世界观" onApply={value => {
+        setPreviewSetting(value); return '预览已应用。可加入项目保存草稿，或导出 JSON 后保存到项目。'
+      }} onSaveToProject={inputActions ? value => {
+        const span = inputActions.captureInsertion()
+        const inserted = inputActions.insertText(settingSavePrompt(value), span)
+        const message = inserted ? '已加入对话草稿，发送后由模型保存到项目。' : '输入框正在处理请求，请稍后重试。'
+        setDraftNotice(message)
+        if (inserted) openView?.('chat', '')
+        return message
+      } : undefined} />
+      {promptOpen && <>
+        <p>说明希望的风格，交给当前项目中的模型修改。</p>
+        <input className="world-request" aria-label="世界设定修改要求" value={worldRequest} maxLength={500} onChange={e => setWorldRequest(e.target.value)} />
+        {inputActions && <button className="trace-link" onClick={() => {
+          const span = inputActions.captureInsertion()
+          if (inputActions.insertText(`${worldRequest}\n${settingPrompt}`, span)) { setDraftNotice('已加入对话草稿，发送后由模型修改。'); openView?.('chat', '') }
+          else setDraftNotice('输入框正在处理请求，请稍后重试。')
+        }}>将要求加入对话草稿</button>}
+        <p role="status">{draftNotice || '也可以复制完整提示词到对话中。'}</p>
+        <textarea aria-label="世界设定修改提示词" readOnly value={`${worldRequest}\n${settingPrompt}`} onFocus={e => e.currentTarget.select()} />
+      </>}
+    </details>
     {boundary && <div className="replay-bar"><input type="range" aria-label="真实历史事件游标" min="1" max={Math.max(1, snapshot.events.length)} value={Math.max(1, cursor)} onChange={e => { const event = snapshot.events[Number(e.target.value) - 1]; if (event) setBoundary({ id: event.id, time: event.time }) }} /><span className="mono">{cursor} / {snapshot.events.length}</span><span>使用当前世界设定 · Agent 继续执行</span></div>}
     {!boundary && snapshot.approvals.map(p => <div className="approval-notice" role="status" key={p.key}><span>需要审批 · {p.toolName ?? '工具'} · {p.sessionId === binding.sessionId ? setting.leaderTitle : snapshot.actors.find(a => a.id === p.sessionId)?.label}</span><button onClick={() => { if (p.sessionId === binding.sessionId) openView?.('chat', ''); else { const address = observation.childAddress(p.sessionId); if (address) context.uiWorkspace.openSession(address) } }}>打开原生审批</button></div>)}
     {snapshot.notices.map(notice => <p className="history-notice" role="status" key={notice}>{notice}</p>)}

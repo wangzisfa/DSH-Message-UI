@@ -1,4 +1,5 @@
 import type { FacilityId } from '../model/types'
+import { defaultFacilityNames } from '../model/setting'
 
 export interface Facility {
   id: FacilityId
@@ -11,7 +12,7 @@ export interface Facility {
 
 // Half-width characters keep the machinery aligned with the terminal grid.
 export const facilities: Facility[] = [
-  { id: 'archive', name: '档案馆', code: '01 / MEMORY BANK', x: 18, y: 24, art: String.raw`     .____________.
+  { id: 'archive', name: defaultFacilityNames.archive, code: '01 / MEMORY BANK', x: 18, y: 24, art: String.raw`     .____________.
     /____________/|
    | .----------. ||
    | | ## :: 01 | ||
@@ -21,7 +22,7 @@ export const facilities: Facility[] = [
    | [===] [===] |/
    '-------------'
      /_/     /_/` },
-  { id: 'web', name: '瞭望台', code: '02 / UPLINK ARRAY', x: 50, y: 19, art: String.raw`     .  . | .  .
+  { id: 'web', name: defaultFacilityNames.web, code: '02 / UPLINK ARRAY', x: 50, y: 19, art: String.raw`     .  . | .  .
    .   \  |  /   .
     .---\ | /---.
      \ ::\|/:: /
@@ -31,7 +32,7 @@ export const facilities: Facility[] = [
       ___/|\___
      /___[+]___\
       '-------'` },
-  { id: 'terminal', name: '控制台', code: '03 / SHELL ACCESS', x: 82, y: 24, art: String.raw`    .____________.
+  { id: 'terminal', name: defaultFacilityNames.terminal, code: '03 / SHELL ACCESS', x: 82, y: 24, art: String.raw`    .____________.
    /____________/|
    | .--------. |||
    | | >_     | |||
@@ -41,7 +42,7 @@ export const facilities: Facility[] = [
    '-----++-----'
     ____/||\____
    /_[]_[]_[]_[]/` },
-  { id: 'workshop', name: '制造工坊', code: '04 / PATCH FORGE', x: 18, y: 73, art: String.raw`         [===]
+  { id: 'workshop', name: defaultFacilityNames.workshop, code: '04 / PATCH FORGE', x: 18, y: 73, art: String.raw`         [===]
      .----||----.
     / ::  || :: /|
    +------+----+ |
@@ -51,7 +52,7 @@ export const facilities: Facility[] = [
    | [::] [::] |/
    '-----------'
     /_/     /_/` },
-  { id: 'portal', name: '传送门', code: '05 / REMOTE GATE', x: 50, y: 77, art: String.raw`       .-====-.
+  { id: 'portal', name: defaultFacilityNames.portal, code: '05 / REMOTE GATE', x: 50, y: 77, art: String.raw`       .-====-.
      .' / :: \ '.
     / .' .--. '. \
    | / .' /\ '. \ |
@@ -62,7 +63,7 @@ export const facilities: Facility[] = [
     __ '-====-' __
    /__|________|__\
 `.trimEnd() },
-  { id: 'test', name: '试炼场', code: '06 / TEST CHAMBER', x: 82, y: 73, art: String.raw`      __     __
+  { id: 'test', name: defaultFacilityNames.test, code: '06 / TEST CHAMBER', x: 82, y: 73, art: String.raw`      __     __
      [==]   [==]
      |::|   |::|
      /  \   /  \
@@ -72,7 +73,7 @@ export const facilities: Facility[] = [
    |______|______|
    [::]==========
     '------------'` },
-  { id: 'hq', name: '指挥中心', code: '00 / NEURAL CORE', x: 50, y: 48, art: String.raw`          .-+--.
+  { id: 'hq', name: defaultFacilityNames.hq, code: '00 / NEURAL CORE', x: 50, y: 48, art: String.raw`          .-+--.
        .-' /|   '-.
       /   / |      \
      +---+--+-------+
@@ -85,7 +86,7 @@ export const facilities: Facility[] = [
     .:============:.
    /___[__CORE__]___\
 `.trimEnd() },
-  { id: 'utility', name: '通用站', code: '07 / AUX MODULE', x: 82, y: 48, art: String.raw`     .---------.
+  { id: 'utility', name: defaultFacilityNames.utility, code: '07 / AUX MODULE', x: 82, y: 48, art: String.raw`     .---------.
     /_________/|
     | [#] [#] ||
     |  .---.  ||
